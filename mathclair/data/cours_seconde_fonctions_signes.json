@@ -1,0 +1,258 @@
+{
+  "id": "seconde-fonctions-tableaux-signes",
+  "titre": "Tableaux de signes",
+  "matiere": "Mathématiques",
+  "niveau": "Seconde",
+  "chapitre": "Fonctions",
+  "description": "Étudier le signe d'une expression selon les valeurs de x, dresser des tableaux de signes.",
+  "couleur": "#6366f1",
+  "icone": "±",
+  "lecons": [
+    {
+      "id": "lecon-1",
+      "titre": "Signe d'un produit et d'un quotient",
+      "contenu": [
+        {
+          "type": "intro",
+          "texte": "Étudier le signe d'une expression, c'est déterminer si elle est positive, négative ou nulle selon les valeurs de la variable."
+        },
+        {
+          "type": "regle",
+          "titre": "Règle des signes pour un produit",
+          "texte": "Pour un produit (ou quotient) de deux facteurs :",
+          "items": [
+            "(+) × (+) = (+)",
+            "(+) × (−) = (−)",
+            "(−) × (+) = (−)",
+            "(−) × (−) = (+)"
+          ]
+        },
+        {
+          "type": "regle",
+          "titre": "Méthode pour dresser un tableau de signes",
+          "texte": "Pour étudier le signe d'une expression f(x) :",
+          "items": [
+            "1. Identifier les valeurs qui annulent chaque facteur",
+            "2. Placer ces valeurs sur une ligne de x, dans l'ordre croissant",
+            "3. Étudier le signe de chaque facteur entre ces valeurs",
+            "4. Appliquer la règle des signes pour obtenir le signe du produit"
+          ]
+        },
+        {
+          "type": "exemple",
+          "titre": "Exemple 1 — Signe de (2x − 4)(x + 1)",
+          "etapes": [
+            {
+              "texte": "On cherche les zéros de chaque facteur :",
+              "calcul": "2x − 4 = 0 ⟹ x = 2\nx + 1 = 0 ⟹ x = −1"
+            },
+            {
+              "texte": "On dresse le tableau de signes :",
+              "tableau": {
+                "headers": ["x", "−∞", "", "−1", "", "2", "", "+∞"],
+                "lignes": [
+                  { "label": "2x − 4", "valeurs": ["−", "−", "0", "+"] },
+                  { "label": "x + 1", "valeurs": ["−", "0", "+", "+"] },
+                  { "label": "(2x−4)(x+1)", "valeurs": ["+", "0", "−", "0", "+"], "gras": true }
+                ]
+              }
+            },
+            {
+              "texte": "Conclusion : (2x − 4)(x + 1) ≥ 0 sur ] −∞ ; −1] ∪ [2 ; +∞["
+            }
+          ]
+        },
+        {
+          "type": "exemple",
+          "titre": "Exemple 2 — Signe de (3 − x) / (x + 2)",
+          "etapes": [
+            {
+              "texte": "Zéro du numérateur : 3 − x = 0 ⟹ x = 3\nZéro du dénominateur : x + 2 = 0 ⟹ x = −2 (valeur interdite)",
+              "calcul": ""
+            },
+            {
+              "texte": "Tableau de signes :",
+              "tableau": {
+                "headers": ["x", "−∞", "", "−2", "", "3", "", "+∞"],
+                "lignes": [
+                  { "label": "3 − x", "valeurs": ["+", "+", "0", "−"] },
+                  { "label": "x + 2", "valeurs": ["−", "0", "+", "+"] },
+                  { "label": "(3−x)/(x+2)", "valeurs": ["−", "||", "+", "0", "−"], "gras": true }
+                ]
+              }
+            },
+            {
+              "texte": "Conclusion : (3 − x) / (x + 2) ≥ 0 sur ]−2 ; 3]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lecon-2",
+      "titre": "Tableau de signes et inéquations",
+      "contenu": [
+        {
+          "type": "intro",
+          "texte": "Le tableau de signes permet de résoudre des inéquations du type f(x) ≥ 0 ou f(x) ≤ 0."
+        },
+        {
+          "type": "regle",
+          "titre": "Lire un tableau de signes",
+          "texte": "Une fois le tableau dressé :",
+          "items": [
+            "f(x) > 0 : lire les intervalles où la dernière ligne est «+»",
+            "f(x) < 0 : lire les intervalles où la dernière ligne est «−»",
+            "f(x) = 0 : lire les valeurs où la dernière ligne vaut 0",
+            "Attention aux valeurs interdites (nourrissons avec ||)"
+          ]
+        },
+        {
+          "type": "exemple",
+          "titre": "Exemple — Résoudre (x − 1)(x + 3) ≤ 0",
+          "etapes": [
+            {
+              "texte": "Zéros : x = 1 et x = −3",
+              "calcul": ""
+            },
+            {
+              "texte": "Tableau :",
+              "tableau": {
+                "headers": ["x", "−∞", "", "−3", "", "1", "", "+∞"],
+                "lignes": [
+                  { "label": "x − 1", "valeurs": ["−", "−", "0", "+"] },
+                  { "label": "x + 3", "valeurs": ["−", "0", "+", "+"] },
+                  { "label": "(x−1)(x+3)", "valeurs": ["+", "0", "−", "0", "+"], "gras": true }
+                ]
+              }
+            },
+            {
+              "texte": "La dernière ligne est ≤ 0 sur [−3 ; 1]. Solution : S = [−3 ; 1]"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "exercices": [
+    {
+      "id": "ex-1",
+      "titre": "Exercice 1 — Signe d'un produit",
+      "difficulte": 1,
+      "enonce": "Dresser le tableau de signes de f(x) = (x − 3)(x + 5), puis résoudre f(x) > 0.",
+      "indices": [
+        "Commencer par trouver les zéros de chaque facteur",
+        "Les zéros sont x = 3 et x = −5"
+      ],
+      "solution": {
+        "etapes": [
+          "Zéros : x − 3 = 0 ⟹ x = 3 ; x + 5 = 0 ⟹ x = −5",
+          "Tableau : (x−3) est − sur ]−∞;3[ et + sur ]3;+∞[. (x+5) est − sur ]−∞;−5[ et + sur ]−5;+∞[",
+          "Le produit est + sur ]−∞;−5[ ∪ ]3;+∞[",
+          "Solution de f(x) > 0 : S = ]−∞ ; −5[ ∪ ]3 ; +∞["
+        ],
+        "tableau": {
+          "headers": ["x", "−∞", "", "−5", "", "3", "", "+∞"],
+          "lignes": [
+            { "label": "x − 3", "valeurs": ["−", "−", "0", "+"] },
+            { "label": "x + 5", "valeurs": ["−", "0", "+", "+"] },
+            { "label": "f(x)", "valeurs": ["+", "0", "−", "0", "+"], "gras": true }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ex-2",
+      "titre": "Exercice 2 — Signe d'un quotient",
+      "difficulte": 2,
+      "enonce": "Étudier le signe de g(x) = (2x + 6) / (x − 4), puis résoudre g(x) ≤ 0.",
+      "indices": [
+        "Attention : x = 4 est une valeur interdite (division par 0)",
+        "Le numérateur s'annule pour x = −3"
+      ],
+      "solution": {
+        "etapes": [
+          "Numérateur : 2x + 6 = 0 ⟹ x = −3",
+          "Dénominateur : x − 4 = 0 ⟹ x = 4 (valeur interdite)",
+          "Signe du quotient : + sur ]−∞;−3[ car (−)(−)=(+), − sur ]−3;4[ car (+)(−)=(−), + sur ]4;+∞[",
+          "Solution de g(x) ≤ 0 : S = [−3 ; 4["
+        ],
+        "tableau": {
+          "headers": ["x", "−∞", "", "−3", "", "4", "", "+∞"],
+          "lignes": [
+            { "label": "2x + 6", "valeurs": ["−", "0", "+", "+"] },
+            { "label": "x − 4", "valeurs": ["−", "−", "||", "+"] },
+            { "label": "g(x)", "valeurs": ["+", "0", "−", "||", "+"], "gras": true }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ex-3",
+      "titre": "Exercice 3 — Expression plus complexe",
+      "difficulte": 3,
+      "enonce": "Résoudre l'inéquation (x + 2)(x − 1) / (3 − x) ≥ 0.",
+      "indices": [
+        "Trois facteurs : trouver 3 valeurs critiques",
+        "La valeur x = 3 est interdite"
+      ],
+      "solution": {
+        "etapes": [
+          "Zéros : x = −2, x = 1. Valeur interdite : x = 3",
+          "Tableau complet avec 4 intervalles",
+          "Signe final + sur [−2 ; 1] ∪ ]3 ; +∞[",
+          "Solution : S = [−2 ; 1] ∪ ]3 ; +∞["
+        ],
+        "tableau": {
+          "headers": ["x", "−∞", "", "−2", "", "1", "", "3", "", "+∞"],
+          "lignes": [
+            { "label": "x + 2", "valeurs": ["−", "0", "+", "+", "+"] },
+            { "label": "x − 1", "valeurs": ["−", "−", "0", "+", "+"] },
+            { "label": "3 − x", "valeurs": ["+", "+", "+", "||", "−"] },
+            { "label": "f(x)", "valeurs": ["−", "0", "+", "0", "−", "||", "+"], "gras": true }
+          ]
+        }
+      }
+    }
+  ],
+  "fiche_revision": {
+    "titre": "Fiche de révision — Tableaux de signes",
+    "sections": [
+      {
+        "titre": "À retenir",
+        "items": [
+          "Un produit est positif si les deux facteurs ont le même signe",
+          "Un produit est négatif si les deux facteurs ont des signes opposés",
+          "Ces règles s'appliquent aussi aux quotients",
+          "Pour un quotient, la valeur qui annule le dénominateur est interdite (noté ||)"
+        ]
+      },
+      {
+        "titre": "Les étapes",
+        "items": [
+          "Étape 1 : Trouver les zéros de chaque facteur",
+          "Étape 2 : Placer les valeurs critiques sur la ligne de x (ordre croissant)",
+          "Étape 3 : Étudier le signe de chaque facteur dans chaque intervalle",
+          "Étape 4 : Combiner les signes avec la règle des signes",
+          "Étape 5 : Lire la solution en fonction de l'inéquation"
+        ]
+      },
+      {
+        "titre": "Pièges classiques",
+        "items": [
+          "Oublier de mettre || pour les valeurs interdites (quotient)",
+          "Inverser le signe d'un facteur du type (a − x) : (a − x) > 0 ⟹ x < a",
+          "Inclure ou non les bornes selon le signe strict (< >) ou large (≤ ≥)"
+        ]
+      },
+      {
+        "titre": "Notation des intervalles",
+        "items": [
+          "Crochet fermé [ ou ] : la borne est incluse (signe large ≤ ou ≥)",
+          "Crochet ouvert ] ou [ : la borne est exclue (signe strict ou valeur interdite)",
+          "−∞ et +∞ sont toujours avec crochet ouvert"
+        ]
+      }
+    ]
+  }
+}

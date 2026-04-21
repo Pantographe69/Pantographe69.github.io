@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — MathClair</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Math<span>Clair</span></a>
+    <div class="nav-actions">
+      <button class="btn-icon" id="themeToggle" title="Changer de thème" aria-label="Thème">
+        <svg id="iconSun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg id="iconMoon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a href="index.html" class="btn-ghost btn-sm">← Accueil</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+    <!-- LOGIN FORM -->
+    <div id="loginSection" class="auth-card">
+      <div class="auth-icon">🔐</div>
+      <h1>Espace Admin</h1>
+      <p>Connecte-toi pour gérer les cours</p>
+      <div class="form-group">
+        <label for="adminPass">Mot de passe</label>
+        <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button class="btn-primary full-width" onclick="login()">Se connecter</button>
+      <p class="auth-hint">⚠️ Le mot de passe est défini dans <code>js/admin.js</code></p>
+      <div id="loginError" class="alert alert-error" style="display:none">Mot de passe incorrect.</div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminSection" style="display:none" class="container">
+      <div class="admin-header">
+        <div>
+          <h1>Gestion des cours</h1>
+          <p>Ajouter, modifier ou supprimer des cours</p>
+        </div>
+        <button class="btn-ghost btn-sm" onclick="logout()">Déconnexion</button>
+      </div>
+
+      <div class="admin-grid">
+        <!-- Upload section -->
+        <div class="admin-card">
+          <h2>Ajouter / Mettre à jour un cours</h2>
+          <p>Importe un fichier JSON conforme au template pour ajouter un cours ou écraser un cours existant avec le même <code>id</code>.</p>
+          
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-inner">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p>Glisse un fichier JSON ici<br>ou <label class="link-label" for="fileInput">parcourir</label></p>
+              <input type="file" id="fileInput" accept=".json" style="display:none" />
+            </div>
+          </div>
+
+          <div id="uploadPreview" style="display:none" class="upload-preview">
+            <div class="preview-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span id="previewFileName"></span>
+              <button class="btn-icon-sm" onclick="clearUpload()">✕</button>
+            </div>
+            <div class="preview-info" id="previewInfo"></div>
+            <button class="btn-primary full-width" onclick="importCours()">Importer ce cours</button>
+          </div>
+
+          <div id="uploadSuccess" class="alert alert-success" style="display:none"></div>
+          <div id="uploadError" class="alert alert-error" style="display:none"></div>
+        </div>
+
+        <!-- Courses list -->
+        <div class="admin-card">
+          <h2>Cours en ligne</h2>
+          <div id="adminCoursList" class="admin-courses-list">
+            <div class="spinner-small"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Template section -->
+      <div class="admin-card full-card">
+        <div class="template-header">
+          <div>
+            <h2>Template JSON</h2>
+            <p>Structure attendue pour un fichier de cours. Copie ce template et remplis-le.</p>
+          </div>
+          <button class="btn-ghost btn-sm" onclick="downloadTemplate()">Télécharger le template</button>
+        </div>
+        <pre class="code-block" id="templateBlock"></pre>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/theme.js"></script>
+  <script src="js/loader.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

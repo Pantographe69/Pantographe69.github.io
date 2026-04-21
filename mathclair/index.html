@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MathClair — Cours de maths interactifs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Math<span>Clair</span></a>
+    <div class="nav-actions">
+      <button class="btn-icon" id="themeToggle" title="Changer de thème" aria-label="Thème">
+        <svg id="iconSun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg id="iconMoon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a href="admin.html" class="btn-ghost btn-sm">Admin</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-badge">Mathématiques • Lycée</div>
+      <h1 class="hero-title">Apprends les maths<br><em>clairement.</em></h1>
+      <p class="hero-sub">Des cours structurés, des exercices progressifs et des fiches de révision pour le lycée.</p>
+      <a href="#niveaux" class="btn-primary">Explorer les cours</a>
+    </section>
+
+    <section class="section" id="niveaux">
+      <div class="container">
+        <h2 class="section-title">Niveaux</h2>
+        <div class="levels-grid">
+          <div class="level-card active" data-level="seconde">
+            <div class="level-badge">2nde</div>
+            <h3>Seconde</h3>
+            <p>9 chapitres disponibles</p>
+            <div class="level-progress"><div style="width: 11%"></div></div>
+          </div>
+          <div class="level-card soon">
+            <div class="level-badge">1ère</div>
+            <h3>Première</h3>
+            <p>Bientôt disponible</p>
+          </div>
+          <div class="level-card soon">
+            <div class="level-badge">Tle</div>
+            <h3>Terminale</h3>
+            <p>Bientôt disponible</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cours">
+      <div class="container">
+        <h2 class="section-title">Seconde — Chapitres</h2>
+        <div class="cours-grid" id="coursGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <span>MathClair — Plateforme de cours gratuits</span>
+      <a href="admin.html">Espace admin</a>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/loader.js"></script>
+  <script>
+    // Load and display courses
+    async function loadCours() {
+      const grid = document.getElementById('coursGrid');
+      const coursFiles = await getCoursList();
+      
+      if (coursFiles.length === 0) {
+        grid.innerHTML = '<p class="empty-state">Aucun cours disponible pour le moment.</p>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      for (const cours of coursFiles) {
+        const card = document.createElement('a');
+        card.href = `cours.html?id=${cours.id}`;
+        card.className = 'cours-card';
+        card.innerHTML = `
+          <div class="cours-icon">${cours.icone || '📐'}</div>
+          <div class="cours-info">
+            <span class="cours-niveau">${cours.niveau} — ${cours.chapitre}</span>
+            <h3>${cours.titre}</h3>
+            <p>${cours.description}</p>
+          </div>
+          <div class="cours-meta">
+            <span>${cours.lecons?.length || 0} leçon${(cours.lecons?.length || 0) > 1 ? 's' : ''}</span>
+            <span>${cours.exercices?.length || 0} exercice${(cours.exercices?.length || 0) > 1 ? 's' : ''}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    loadCours();
+  </script>
+</body>
+</html>
