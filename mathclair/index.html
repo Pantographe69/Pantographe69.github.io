@@ -1,110 +1,2314 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MathClair — Cours de maths interactifs</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathClair — Cours de maths du collège au lycée</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" crossorigin="anonymous"></script>
+<style>
+:root {
+  --bg: #fafaf8;
+  --bg2: #f3f2ee;
+  --bg3: #eae9e3;
+  --card: #ffffff;
+  --text: #1a1a16;
+  --text2: #5a5a52;
+  --text3: #9a9a8e;
+  --border: #e2e1da;
+  --border2: #d0cfc7;
+  --accent: #2d6a4f;
+  --accent2: #40916c;
+  --accent-bg: #d8f3dc;
+  --accent-light: #f0faf2;
+  --gold: #b5830a;
+  --gold-bg: #fef9ec;
+  --coral: #c0392b;
+  --coral-bg: #fdedec;
+  --blue: #1a5c8a;
+  --blue-bg: #e8f4fd;
+  --purple: #6d3fa5;
+  --purple-bg: #f3edfb;
+  --r: 12px;
+  --r2: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
+  --shadow2: 0 4px 16px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  --transition: 0.18s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ─── LAYOUT ─── */
+.app { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow: hidden;
+}
+.sidebar-header {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.logo { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.logo-icon {
+  width: 36px; height: 36px; background: var(--accent); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 18px; color: white; font-style: italic;
+}
+.logo-text { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: var(--text); }
+.logo-text span { color: var(--accent); }
+
+.search-box {
+  position: relative;
+}
+.search-box input {
+  width: 100%; padding: 8px 12px 8px 34px;
+  border: 1px solid var(--border); border-radius: var(--r2);
+  background: var(--bg2); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+  outline: none; transition: var(--transition);
+}
+.search-box input:focus { border-color: var(--accent2); background: var(--card); }
+.search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0.4; }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+
+.nav-section { margin-bottom: 4px; }
+.nav-section-header {
+  padding: 6px 16px 4px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em;
+  color: var(--text3); text-transform: uppercase;
+}
+.nav-level {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 16px 7px 20px;
+  cursor: pointer; border-radius: 0;
+  font-size: 13.5px; color: var(--text2);
+  transition: var(--transition);
+  border-left: 2px solid transparent;
+}
+.nav-level:hover { background: var(--bg2); color: var(--text); }
+.nav-level.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-light); font-weight: 500; }
+.nav-level .badge {
+  margin-left: auto; font-size: 10px; padding: 1px 6px;
+  background: var(--bg3); border-radius: 20px; color: var(--text3);
+}
+.nav-level.active .badge { background: var(--accent-bg); color: var(--accent); }
+
+.sidebar-footer { padding: 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.stats-row { display: flex; gap: 8px; }
+.stat-chip {
+  flex: 1; text-align: center; padding: 8px 4px;
+  background: var(--bg2); border-radius: var(--r2);
+}
+.stat-chip .n { font-size: 18px; font-weight: 600; color: var(--text); }
+.stat-chip .l { font-size: 10px; color: var(--text3); margin-top: 1px; }
+
+/* ─── MAIN ─── */
+.main { overflow-y: auto; height: 100vh; }
+
+/* ─── PAGE: CATALOGUE ─── */
+.catalogue { max-width: 960px; margin: 0 auto; padding: 40px 40px 80px; }
+.page-hero { margin-bottom: 40px; }
+.page-hero h1 { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 600; line-height: 1.2; color: var(--text); }
+.page-hero h1 em { font-style: italic; color: var(--accent); }
+.page-hero p { margin-top: 10px; font-size: 16px; color: var(--text2); max-width: 520px; }
+
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.filter-chip {
+  padding: 6px 14px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--card);
+  font-size: 13px; color: var(--text2); cursor: pointer;
+  transition: var(--transition); font-family: 'DM Sans', sans-serif;
+}
+.filter-chip:hover { border-color: var(--accent2); color: var(--accent); }
+.filter-chip.active { background: var(--accent); border-color: var(--accent); color: white; font-weight: 500; }
+
+.courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 18px; }
+
+.course-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r);
+  cursor: pointer; transition: var(--transition); overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.course-card:hover { box-shadow: var(--shadow2); border-color: var(--border2); transform: translateY(-1px); }
+.course-card-top { padding: 20px 20px 16px; flex: 1; }
+.course-card-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 14px;
+}
+.course-card h3 { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 6px; }
+.course-card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.course-card-meta {
+  padding: 12px 20px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.course-card-tags { display: flex; gap: 6px; }
+.tag {
+  font-size: 11px; padding: 2px 8px; border-radius: 20px;
+  font-weight: 500;
+}
+.tag-niveau { background: var(--bg3); color: var(--text2); }
+.tag-chapitre { background: var(--accent-bg); color: var(--accent); }
+.difficulty-dots { display: flex; gap: 3px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); }
+.dot.on { background: var(--gold); }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
+.empty-state p { font-size: 15px; margin-top: 8px; }
+
+/* ─── PAGE: COURS ─── */
+.cours-page { max-width: 820px; margin: 0 auto; padding: 40px 40px 100px; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 32px;
+  font-size: 13px; color: var(--text3);
+}
+.breadcrumb a { color: var(--text3); text-decoration: none; cursor: pointer; transition: var(--transition); }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb svg { opacity: 0.4; }
+
+.cours-hero { margin-bottom: 40px; }
+.cours-hero .meta { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.cours-hero h1 { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 600; line-height: 1.2; }
+.cours-hero .desc { font-size: 16px; color: var(--text2); margin-top: 10px; line-height: 1.6; }
+
+/* PROGRESS */
+.progress-bar-wrap { background: var(--bg3); border-radius: 100px; height: 4px; margin: 24px 0 0; }
+.progress-bar { height: 100%; border-radius: 100px; background: var(--accent); transition: width 0.4s ease; }
+
+/* LECONS NAV */
+.lecons-nav { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+.lecon-btn {
+  padding: 7px 16px; border-radius: var(--r2);
+  border: 1px solid var(--border); background: var(--card);
+  font-size: 13px; color: var(--text2); cursor: pointer;
+  transition: var(--transition); font-family: 'DM Sans', sans-serif;
+}
+.lecon-btn:hover { border-color: var(--accent2); color: var(--accent); }
+.lecon-btn.active { background: var(--accent); border-color: var(--accent); color: white; font-weight: 500; }
+.lecon-btn.done { background: var(--accent-bg); border-color: var(--accent2); color: var(--accent); }
+
+/* CONTENT BLOCKS */
+.content-block { margin-bottom: 24px; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.block-intro {
+  font-size: 16px; line-height: 1.75; color: var(--text2);
+  padding: 20px 24px; background: var(--bg2);
+  border-radius: var(--r); border-left: 3px solid var(--accent);
+}
+
+.block-regle {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
+}
+.block-regle-header {
+  padding: 14px 20px; background: var(--accent);
+  display: flex; align-items: center; gap: 10px;
+}
+.block-regle-header h4 { color: white; font-size: 14px; font-weight: 600; }
+.block-regle-body { padding: 16px 20px; }
+.block-regle-body p { font-size: 14.5px; color: var(--text2); margin-bottom: 12px; }
+.block-regle-body ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.block-regle-body li {
+  padding: 7px 12px; background: var(--accent-light);
+  border-radius: var(--r2); font-size: 14px; color: var(--text);
+  font-family: 'DM Mono', monospace; letter-spacing: 0.02em;
+}
+
+.block-exemple {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
+}
+.block-exemple-header {
+  padding: 13px 20px; background: var(--gold-bg);
+  border-bottom: 1px solid #f0e0b0;
+  display: flex; align-items: center; gap: 8px;
+}
+.block-exemple-header h4 { font-size: 14px; font-weight: 600; color: var(--gold); }
+.block-exemple-body { padding: 16px 20px; }
+.etape { margin-bottom: 14px; }
+.etape:last-child { margin-bottom: 0; }
+.etape p { font-size: 14.5px; color: var(--text2); margin-bottom: 6px; line-height: 1.6; }
+.etape .calcul {
+  font-family: 'DM Mono', monospace; font-size: 13.5px;
+  background: var(--bg2); padding: 10px 14px;
+  border-radius: var(--r2); color: var(--text);
+  white-space: pre-line; line-height: 1.8;
+}
+.etape .conclusion {
+  padding: 10px 14px; background: var(--accent-light);
+  border-radius: var(--r2); font-size: 14px; color: var(--accent);
+  font-weight: 500; border-left: 3px solid var(--accent);
+}
+
+/* TABLEAU DE SIGNES */
+.sign-table-wrap { overflow-x: auto; margin: 10px 0; }
+.sign-table {
+  border-collapse: collapse; font-family: 'DM Mono', monospace;
+  font-size: 13.5px; width: 100%;
+}
+.sign-table th, .sign-table td {
+  border: 1px solid var(--border2); padding: 7px 14px;
+  text-align: center; white-space: nowrap;
+}
+.sign-table th { background: var(--bg3); font-weight: 600; color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; }
+.sign-table td.label { text-align: left; background: var(--bg2); font-weight: 500; color: var(--text); }
+.sign-table td.plus { color: #2d6a4f; font-weight: 600; }
+.sign-table td.minus { color: #c0392b; font-weight: 600; }
+.sign-table td.zero { color: var(--blue); font-weight: 700; font-size: 15px; }
+.sign-table td.interdit { color: var(--text2); font-weight: 700; }
+.sign-table tr:last-child td { background: #fffbf0; font-weight: 700; }
+.sign-table tr:last-child td.plus { background: #e8f8ef; }
+.sign-table tr:last-child td.minus { background: #fdecea; }
+
+/* ─── EXERCICES ─── */
+.exercices-section { margin-top: 48px; }
+.exercices-section h2 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 600; margin-bottom: 20px; }
+
+.exo-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); margin-bottom: 20px; overflow: hidden;
+  transition: var(--transition);
+}
+.exo-card:hover { box-shadow: var(--shadow); }
+
+.exo-header {
+  padding: 16px 20px; display: flex; align-items: flex-start;
+  gap: 14px; cursor: pointer;
+}
+.exo-num {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+}
+.exo-info { flex: 1; }
+.exo-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.exo-stars { display: flex; gap: 3px; }
+.star { font-size: 13px; }
+
+.exo-body { padding: 0 20px 20px; }
+.enonce {
+  font-size: 15px; color: var(--text); line-height: 1.7;
+  padding: 14px 16px; background: var(--bg2); border-radius: var(--r2); margin-bottom: 16px;
+}
+
+/* QCM / INTERACTIVE */
+.qcm-options { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.qcm-opt {
+  padding: 11px 16px; border: 1.5px solid var(--border);
+  border-radius: var(--r2); cursor: pointer; font-size: 14.5px;
+  transition: var(--transition); background: var(--card);
+}
+.qcm-opt:hover { border-color: var(--accent2); background: var(--accent-light); }
+.qcm-opt.correct { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 500; }
+.qcm-opt.wrong { border-color: var(--coral); background: var(--coral-bg); color: var(--coral); }
+.qcm-opt.disabled { pointer-events: none; }
+
+.fill-input {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 12px 0;
+}
+.fill-input input {
+  padding: 9px 14px; border: 1.5px solid var(--border);
+  border-radius: var(--r2); font-size: 15px; font-family: 'DM Mono', monospace;
+  background: var(--card); color: var(--text); outline: none;
+  transition: var(--transition); width: 200px;
+}
+.fill-input input:focus { border-color: var(--accent2); }
+.fill-input input.correct { border-color: var(--accent); background: var(--accent-light); }
+.fill-input input.wrong { border-color: var(--coral); background: var(--coral-bg); }
+
+.btn { padding: 9px 20px; border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: var(--transition); border: none; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-secondary { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--bg3); }
+
+.feedback { margin: 12px 0; padding: 11px 15px; border-radius: var(--r2); font-size: 14px; font-weight: 500; display: none; }
+.feedback.show { display: block; }
+.feedback.correct { background: var(--accent-light); color: var(--accent); border-left: 3px solid var(--accent); }
+.feedback.wrong { background: var(--coral-bg); color: var(--coral); border-left: 3px solid var(--coral); }
+
+.indice-btn { margin: 0 0 10px; }
+.indice-text { padding: 10px 14px; background: var(--gold-bg); border-radius: var(--r2); font-size: 13.5px; color: var(--gold); margin-bottom: 8px; display: none; }
+.indice-text.show { display: block; }
+
+.solution-panel {
+  background: var(--bg2); border-radius: var(--r2);
+  margin-top: 12px; overflow: hidden;
+}
+.solution-toggle {
+  padding: 11px 16px; cursor: pointer; font-size: 14px; font-weight: 500;
+  color: var(--text2); display: flex; align-items: center; gap: 8px;
+  transition: var(--transition);
+}
+.solution-toggle:hover { color: var(--text); }
+.solution-body { padding: 14px 16px; border-top: 1px solid var(--border); display: none; }
+.solution-body.show { display: block; }
+.solution-body ol { padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
+.solution-body li { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+/* SIGN TABLE INTERACTIVE */
+.sign-table-interactive { margin: 14px 0; }
+.sign-table-interactive .sign-table td.editable {
+  cursor: pointer; transition: background 0.12s;
+  min-width: 50px;
+}
+.sign-table-interactive .sign-table td.editable:hover { background: var(--accent-light); }
+
+/* FICHE REVISION */
+.fiche { margin-top: 48px; background: var(--card); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.fiche-header { padding: 20px 24px; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+.fiche-header h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: white; font-weight: 600; }
+.fiche-body { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.fiche-section h4 { font-size: 13px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+.fiche-section ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.fiche-section li {
+  font-size: 13.5px; color: var(--text); padding: 6px 10px;
+  background: var(--bg2); border-radius: var(--r2); line-height: 1.5;
+}
+.fiche-section li::before { content: "→ "; color: var(--accent); font-weight: 600; }
+
+/* COMPLETION */
+.lecon-complete {
+  text-align: center; padding: 32px 24px;
+  background: var(--accent-light); border-radius: var(--r);
+  border: 1px solid var(--accent2); margin: 24px 0;
+  animation: fadeIn 0.4s ease;
+}
+.lecon-complete .big { font-size: 40px; margin-bottom: 12px; }
+.lecon-complete h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--accent); margin-bottom: 8px; }
+.lecon-complete p { color: var(--text2); font-size: 14.5px; }
+.lecon-complete .actions { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
+
+/* SCORE TRACKER */
+.score-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; background: var(--bg2);
+  border-radius: var(--r2); margin-bottom: 20px;
+}
+.score-bar span { font-size: 13.5px; color: var(--text2); }
+.score-bar strong { color: var(--text); }
+.score-mini { display: flex; gap: 4px; }
+.score-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border2); }
+.score-dot.correct { background: var(--accent); }
+.score-dot.wrong { background: var(--coral); }
+
+/* BACK BTN */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r2); font-size: 13px; color: var(--text2);
+  cursor: pointer; transition: var(--transition); margin-bottom: 24px;
+  font-family: 'DM Sans', sans-serif;
+}
+.back-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: fixed; left: -280px; z-index: 100; transition: left 0.3s ease; }
+  .sidebar.open { left: 0; }
+  .main { height: auto; min-height: 100vh; }
+  .catalogue, .cours-page { padding: 24px 20px 60px; }
+  .fiche-body { grid-template-columns: 1fr; }
+  .courses-grid { grid-template-columns: 1fr; }
+}
+
+/* ANIMATIONS */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.25s ease; }
+
+/* LEVEL COLORS */
+.lvl-6e { --lvl-color: #6d3fa5; --lvl-bg: #f3edfb; }
+.lvl-5e { --lvl-color: #185fa5; --lvl-bg: #e8f4fd; }
+.lvl-4e { --lvl-color: #0f6e56; --lvl-bg: #d8f3dc; }
+.lvl-3e { --lvl-color: #b5830a; --lvl-bg: #fef9ec; }
+.lvl-2nde { --lvl-color: #c0392b; --lvl-bg: #fdedec; }
+.lvl-1ere { --lvl-color: #1a5c8a; --lvl-bg: #e8f4fd; }
+.lvl-term { --lvl-color: #2d6a4f; --lvl-bg: #d8f3dc; }
+
+.course-card-icon { background: var(--lvl-bg, var(--bg2)); }
+.exo-num { background: var(--lvl-bg, var(--accent-bg)); color: var(--lvl-color, var(--accent)); }
+</style>
 </head>
 <body>
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">Math<span>Clair</span></a>
-    <div class="nav-actions">
-      <button class="btn-icon" id="themeToggle" title="Changer de thème" aria-label="Thème">
-        <svg id="iconSun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        <svg id="iconMoon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <a href="admin.html" class="btn-ghost btn-sm">Admin</a>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">M</div>
+        <div class="logo-text">Math<span>Clair</span></div>
+      </div>
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Rechercher un cours…" id="search-input" oninput="filterSearch(this.value)">
+      </div>
     </div>
-  </nav>
-
-  <main>
-    <section class="hero">
-      <div class="hero-badge">Mathématiques • Lycée</div>
-      <h1 class="hero-title">Apprends les maths<br><em>clairement.</em></h1>
-      <p class="hero-sub">Des cours structurés, des exercices progressifs et des fiches de révision pour le lycée.</p>
-      <a href="#niveaux" class="btn-primary">Explorer les cours</a>
-    </section>
-
-    <section class="section" id="niveaux">
-      <div class="container">
-        <h2 class="section-title">Niveaux</h2>
-        <div class="levels-grid">
-          <div class="level-card active" data-level="seconde">
-            <div class="level-badge">2nde</div>
-            <h3>Seconde</h3>
-            <p>9 chapitres disponibles</p>
-            <div class="level-progress"><div style="width: 11%"></div></div>
-          </div>
-          <div class="level-card soon">
-            <div class="level-badge">1ère</div>
-            <h3>Première</h3>
-            <p>Bientôt disponible</p>
-          </div>
-          <div class="level-card soon">
-            <div class="level-badge">Tle</div>
-            <h3>Terminale</h3>
-            <p>Bientôt disponible</p>
-          </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-header">Collège</div>
+        <div class="nav-level lvl-6e" onclick="setLevel('6e')" id="nav-6e">
+          <span>6ème</span><span class="badge">5</span>
+        </div>
+        <div class="nav-level lvl-5e" onclick="setLevel('5e')" id="nav-5e">
+          <span>5ème</span><span class="badge">5</span>
+        </div>
+        <div class="nav-level lvl-4e" onclick="setLevel('4e')" id="nav-4e">
+          <span>4ème</span><span class="badge">5</span>
+        </div>
+        <div class="nav-level lvl-3e" onclick="setLevel('3e')" id="nav-3e">
+          <span>3ème</span><span class="badge">5</span>
         </div>
       </div>
-    </section>
-
-    <section class="section" id="cours">
-      <div class="container">
-        <h2 class="section-title">Seconde — Chapitres</h2>
-        <div class="cours-grid" id="coursGrid">
-          <!-- Populated by JS -->
+      <div class="nav-section">
+        <div class="nav-section-header">Lycée</div>
+        <div class="nav-level lvl-2nde" onclick="setLevel('2nde')" id="nav-2nde">
+          <span>Seconde</span><span class="badge">6</span>
+        </div>
+        <div class="nav-level lvl-1ere" onclick="setLevel('1ere')" id="nav-1ere">
+          <span>Première</span><span class="badge">5</span>
+        </div>
+        <div class="nav-level lvl-term" onclick="setLevel('term')" id="nav-term">
+          <span>Terminale</span><span class="badge">5</span>
+        </div>
+        <div class="nav-level" onclick="setLevel('all')" id="nav-all" style="margin-top:4px;color:var(--text3);font-size:12.5px">
+          <span>Tous les niveaux</span>
         </div>
       </div>
-    </section>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="stats-row">
+        <div class="stat-chip"><div class="n" id="stat-courses">36</div><div class="l">Cours</div></div>
+        <div class="stat-chip"><div class="n" id="stat-exos">180+</div><div class="l">Exercices</div></div>
+        <div class="stat-chip"><div class="n" id="stat-progress">0%</div><div class="l">Maîtrisé</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+    <!-- PAGE CATALOGUE -->
+    <div class="page active" id="page-catalogue">
+      <div class="catalogue">
+        <div class="page-hero">
+          <h1>Les maths,<br><em>enfin claires.</em></h1>
+          <p>Cours structurés, exercices interactifs et fiches de révision — de la 6ème à la Terminale.</p>
+        </div>
+        <div class="filter-bar" id="filter-bar"></div>
+        <div class="courses-grid" id="courses-grid"></div>
+      </div>
+    </div>
+
+    <!-- PAGE COURS -->
+    <div class="page" id="page-cours">
+      <div class="cours-page" id="cours-content"></div>
+    </div>
   </main>
+</div>
 
-  <footer class="footer">
-    <div class="container">
-      <span>MathClair — Plateforme de cours gratuits</span>
-      <a href="admin.html">Espace admin</a>
+<script>
+// ══════════════════════════════════════════════════
+// DATA — TOUS LES COURS
+// ══════════════════════════════════════════════════
+const COURSES = [
+
+// ═══ 6ÈME ═══
+{
+  id:"6e-nombres-entiers", titre:"Les nombres entiers et décimaux", niveau:"6e", chapitre:"Nombres",
+  description:"Lire, écrire et comparer les grands nombres. Comprendre les décimaux et leur écriture.", icone:"🔢", couleur:"#6d3fa5",
+  lecons:[
+    { id:"l1", titre:"Les grands nombres", contenu:[
+      {type:"intro", texte:"Un grand nombre peut être décomposé en milliards, millions, milliers, unités. La place de chaque chiffre détermine sa valeur."},
+      {type:"regle", titre:"Valeur de position", texte:"Chaque rang a une valeur :", items:["Unités (u) : ×1","Dizaines (d) : ×10","Centaines (c) : ×100","Milliers (m) : ×1 000","Millions : ×1 000 000"]},
+      {type:"exemple", titre:"Décomposer 3 047 205", etapes:[
+        {texte:"On identifie chaque chiffre :", calcul:"3 047 205\n= 3 × 1 000 000 + 0 × 100 000 + 4 × 10 000\n  + 7 × 1 000 + 2 × 100 + 0 × 10 + 5 × 1"},
+        {texte:"Lecture : trois millions quarante-sept mille deux cent cinq."}
+      ]}
+    ]},
+    { id:"l2", titre:"Les nombres décimaux", contenu:[
+      {type:"intro", texte:"Un nombre décimal a une partie entière et une partie décimale, séparées par une virgule."},
+      {type:"regle", titre:"Les rangs décimaux", texte:"Après la virgule :", items:["1er rang : dixièmes (÷10)","2e rang : centièmes (÷100)","3e rang : millièmes (÷1000)"]},
+      {type:"exemple", titre:"Lire 12,305", etapes:[
+        {texte:"12,305 = 12 + 3/10 + 0/100 + 5/1000", calcul:"= 12 unités, 3 dixièmes, 0 centième, 5 millièmes"},
+        {texte:"Lecture : douze virgule trois cent cinq."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Valeur d'un chiffre", difficulte:1, type:"qcm",
+     enonce:"Dans le nombre 4 825 103, que vaut le chiffre 8 ?",
+     options:["8 unités","8 milliers","800 000","80 000"], correct:2,
+     explication:"Le 8 est en position des centaines de milliers : 8 × 100 000 = 800 000."},
+    {id:"ex2", titre:"Compléter — Décomposition", difficulte:2, type:"fill",
+     enonce:"Complète : 7 305,42 = 7 × ___ + 3 × 100 + 0 × 10 + 5 + 4 × 0,1 + 2 × 0,01",
+     answer:"1000", hint:"C'est le rang des milliers.",
+     explication:"7 est en position des milliers, donc 7 × 1 000."},
+    {id:"ex3", titre:"QCM — Comparaison", difficulte:1, type:"qcm",
+     enonce:"Quel est le plus grand ?",
+     options:["12,09","12,9","12,090","12,89"], correct:1,
+     explication:"12,9 = 12,900 est plus grand que 12,89."},
+    {id:"ex4", titre:"Décomposition libre", difficulte:2, type:"fill",
+     enonce:"Écris la valeur du 6 dans 406 285 :",
+     answer:"6000", hint:"Compte les rangs depuis la droite.",
+     explication:"Le 6 est au rang des milliers : 6 × 1 000 = 6 000."},
+    {id:"ex5", titre:"QCM — Encadrement", difficulte:3, type:"qcm",
+     enonce:"Encadre 3,47 entre deux dixièmes consécutifs :",
+     options:["3,4 < 3,47 < 3,5","3,3 < 3,47 < 3,4","3,0 < 3,47 < 4,0","3,47 < 3,4"], correct:0,
+     explication:"3,4 < 3,47 < 3,5 car 3,47 est entre 3,4 et 3,5."}
+  ],
+  fiche:{titre:"Fiche — Nombres entiers et décimaux", sections:[
+    {titre:"À retenir", items:["La valeur d'un chiffre dépend de sa position","La virgule sépare entier et décimal","Plus de chiffres après la virgule ≠ plus grand"]},
+    {titre:"Pièges", items:["12,9 > 12,09 (ne pas confondre dixièmes et centièmes)","0 peut occuper une position importante"]}
+  ]}
+},
+
+{
+  id:"6e-fractions-intro", titre:"Introduction aux fractions", niveau:"6e", chapitre:"Fractions",
+  description:"Comprendre ce qu'est une fraction, comparer et simplifier des fractions simples.", icone:"½", couleur:"#6d3fa5",
+  lecons:[
+    { id:"l1", titre:"Qu'est-ce qu'une fraction ?", contenu:[
+      {type:"intro", texte:"Une fraction représente une partie d'un tout. Le numérateur dit combien de parts on prend, le dénominateur dit en combien de parts égales on a découpé le tout."},
+      {type:"regle", titre:"Vocabulaire", texte:"Pour la fraction a/b :", items:["a = numérateur (parts prises)","b = dénominateur (nombre de parts égales)","b ≠ 0 (on ne divise jamais par 0)"]},
+      {type:"exemple", titre:"3/4 de pizza", etapes:[
+        {texte:"La pizza est découpée en 4 parts égales. On en prend 3.", calcul:"Numérateur = 3\nDénominateur = 4"},
+        {texte:"3/4 est supérieur à 1/2 car 3×2 = 6 > 4×1 = 4."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Lecture de fraction", difficulte:1, type:"qcm",
+     enonce:"Dans 5/8, le dénominateur est…",
+     options:["5","8","5/8","3"], correct:1, explication:"Le dénominateur est le nombre du bas : 8."},
+    {id:"ex2", titre:"QCM — Comparaison", difficulte:2, type:"qcm",
+     enonce:"Quelle fraction est la plus grande ?",
+     options:["2/5","3/5","1/5","4/5"], correct:3, explication:"4/5 > 3/5 > 2/5 > 1/5, même dénominateur donc on compare les numérateurs."},
+    {id:"ex3", titre:"Compléter", difficulte:2, type:"fill",
+     enonce:"3/4 = ?/8 (trouver le numérateur manquant)",
+     answer:"6", hint:"On multiplie numérateur et dénominateur par le même nombre.",
+     explication:"3/4 = 6/8 car 3×2=6 et 4×2=8."},
+    {id:"ex4", titre:"QCM — Fractions égales", difficulte:2, type:"qcm",
+     enonce:"Quelle fraction est égale à 2/3 ?",
+     options:["4/9","4/6","3/4","6/9"], correct:1, explication:"2/3 = 4/6 (on multiplie par 2) = 6/9 (on multiplie par 3)."},
+    {id:"ex5", titre:"QCM — Fraction d'une quantité", difficulte:3, type:"qcm",
+     enonce:"Les 3/4 de 20 élèves, c'est…",
+     options:["15","12","10","8"], correct:0, explication:"3/4 × 20 = 60/4 = 15."}
+  ],
+  fiche:{titre:"Fiche — Fractions", sections:[
+    {titre:"Définition", items:["a/b : a parts sur b","Numérateur = haut, Dénominateur = bas","b ≠ 0"]},
+    {titre:"Opérations", items:["Même dénominateur : additionner les numérateurs","Fractions équivalentes : ×/÷ même nombre haut et bas"]}
+  ]}
+},
+
+{
+  id:"6e-geometrie-perimetre", titre:"Périmètre et Aires", niveau:"6e", chapitre:"Géométrie",
+  description:"Calculer le périmètre et l'aire des figures usuelles : carré, rectangle, triangle.", icone:"□", couleur:"#6d3fa5",
+  lecons:[
+    { id:"l1", titre:"Périmètre des figures", contenu:[
+      {type:"intro", texte:"Le périmètre est la longueur du contour d'une figure. On l'obtient en additionnant toutes les longueurs des côtés."},
+      {type:"regle", titre:"Formules de périmètre", texte:"Figures usuelles :", items:["Carré : P = 4 × c","Rectangle : P = 2 × (L + l)","Triangle : P = a + b + c"]},
+      {type:"exemple", titre:"Rectangle 8 cm × 5 cm", etapes:[
+        {texte:"On applique la formule :", calcul:"P = 2 × (8 + 5) = 2 × 13 = 26 cm"},
+        {texte:"Le périmètre est 26 cm."}
+      ]}
+    ]},
+    { id:"l2", titre:"Aire des figures", contenu:[
+      {type:"intro", texte:"L'aire mesure la surface d'une figure. Elle s'exprime en cm², m², etc."},
+      {type:"regle", titre:"Formules d'aire", texte:"Figures usuelles :", items:["Carré : A = c²","Rectangle : A = L × l","Triangle : A = (base × hauteur) ÷ 2"]},
+      {type:"exemple", titre:"Triangle base 10 cm, hauteur 6 cm", etapes:[
+        {texte:"On applique la formule :", calcul:"A = (10 × 6) ÷ 2 = 60 ÷ 2 = 30 cm²"},
+        {texte:"L'aire du triangle est 30 cm²."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Périmètre carré", difficulte:1, type:"qcm",
+     enonce:"Un carré a un côté de 7 cm. Son périmètre est :",
+     options:["14 cm","28 cm","49 cm","21 cm"], correct:1, explication:"P = 4 × 7 = 28 cm."},
+    {id:"ex2", titre:"Calcul — Aire rectangle", difficulte:1, type:"fill",
+     enonce:"Un rectangle mesure 12 cm de long et 4 cm de large. Son aire est ___ cm².",
+     answer:"48", hint:"A = Longueur × Largeur", explication:"A = 12 × 4 = 48 cm²."},
+    {id:"ex3", titre:"QCM — Aire triangle", difficulte:2, type:"qcm",
+     enonce:"Un triangle a une base de 8 cm et une hauteur de 5 cm. Son aire est :",
+     options:["40 cm²","20 cm²","13 cm²","80 cm²"], correct:1, explication:"A = (8 × 5) ÷ 2 = 20 cm²."},
+    {id:"ex4", titre:"Problème — Clôture", difficulte:2, type:"fill",
+     enonce:"Un jardin rectangulaire mesure 15 m × 8 m. Quelle longueur de grillage faut-il (en m) ?",
+     answer:"46", hint:"C'est le périmètre du jardin.", explication:"P = 2 × (15 + 8) = 2 × 23 = 46 m."},
+    {id:"ex5", titre:"QCM — Unités d'aire", difficulte:3, type:"qcm",
+     enonce:"1 m² vaut combien de cm² ?",
+     options:["100 cm²","1 000 cm²","10 000 cm²","100 000 cm²"], correct:2, explication:"1 m = 100 cm, donc 1 m² = 100 × 100 = 10 000 cm²."}
+  ],
+  fiche:{titre:"Fiche — Périmètre et Aires", sections:[
+    {titre:"Périmètres", items:["Carré : 4c","Rectangle : 2(L+l)","Triangle : a+b+c"]},
+    {titre:"Aires", items:["Carré : c²","Rectangle : L×l","Triangle : (b×h)÷2"]}
+  ]}
+},
+
+{
+  id:"6e-proportionnalite", titre:"Proportionnalité", niveau:"6e", chapitre:"Proportionnalité",
+  description:"Reconnaître une situation de proportionnalité et utiliser le produit en croix.", icone:"∝", couleur:"#6d3fa5",
+  lecons:[
+    { id:"l1", titre:"Tableaux de proportionnalité", contenu:[
+      {type:"intro", texte:"Deux grandeurs sont proportionnelles si leur quotient est toujours le même (coefficient de proportionnalité)."},
+      {type:"regle", titre:"Propriétés", texte:"Dans un tableau proportionnel :", items:["Toutes les colonnes ont le même rapport","On peut multiplier ou diviser par un même nombre","Le produit en croix est égal"]},
+      {type:"exemple", titre:"3 stylos coûtent 4,50 €. Prix de 7 stylos ?", etapes:[
+        {texte:"Coefficient : 4,50 ÷ 3 = 1,50 €/stylo", calcul:"7 stylos → 7 × 1,50 = 10,50 €"},
+        {texte:"7 stylos coûtent 10,50 €."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Coefficient", difficulte:1, type:"qcm",
+     enonce:"4 kg de pommes coûtent 6 €. Quel est le prix au kg ?",
+     options:["1,50 €","2 €","1 €","0,67 €"], correct:0, explication:"6 ÷ 4 = 1,50 €/kg."},
+    {id:"ex2", titre:"Calcul — Produit en croix", difficulte:2, type:"fill",
+     enonce:"Si 5 m de tissu coûtent 30 €, combien coûtent 8 m (en €) ?",
+     answer:"48", hint:"Utilise le coefficient : 30÷5 = 6 €/m", explication:"8 × 6 = 48 €."},
+    {id:"ex3", titre:"QCM — Proportionnalité ?", difficulte:2, type:"qcm",
+     enonce:"Est-ce proportionnel : x = 2,4,6 ; y = 3,6,9 ?",
+     options:["Oui, coefficient 1,5","Non","Oui, coefficient 2","Oui, coefficient 3"], correct:0,
+     explication:"3/2 = 6/4 = 9/6 = 1,5 → proportionnel, coefficient 1,5."},
+    {id:"ex4", titre:"Problème", difficulte:2, type:"fill",
+     enonce:"Une voiture roule à vitesse constante. En 3 h, elle parcourt 210 km. En 5 h, elle parcourt ___ km.",
+     answer:"350", hint:"Vitesse = 210÷3 km/h", explication:"70 km/h × 5 = 350 km."},
+    {id:"ex5", titre:"QCM — Échelle", difficulte:3, type:"qcm",
+     enonce:"Sur une carte au 1/50 000, une route mesure 4 cm. Quelle est sa longueur réelle ?",
+     options:["200 m","2 km","20 km","200 km"], correct:1, explication:"4 cm × 50 000 = 200 000 cm = 2 km."}
+  ],
+  fiche:{titre:"Fiche — Proportionnalité", sections:[
+    {titre:"À retenir", items:["Coefficient = y÷x (constant)","Produit en croix : a×d = b×c","Graphe proportionnel = droite passant par l'origine"]},
+    {titre:"Pièges", items:["Vérifier que le rapport est bien constant","Ne pas confondre avec une relation affine (y = ax + b, b≠0)"]}
+  ]}
+},
+
+{
+  id:"6e-angles", titre:"Les angles", niveau:"6e", chapitre:"Géométrie",
+  description:"Identifier, mesurer et construire des angles. Angles droits, aigus, obtus, plats.", icone:"∠", couleur:"#6d3fa5",
+  lecons:[
+    { id:"l1", titre:"Types d'angles", contenu:[
+      {type:"intro", texte:"Un angle est formé par deux demi-droites de même origine (le sommet). On le mesure en degrés (°)."},
+      {type:"regle", titre:"Classification des angles", texte:"Selon leur mesure :", items:["Angle nul : 0°","Angle aigu : entre 0° et 90°","Angle droit : exactement 90°","Angle obtus : entre 90° et 180°","Angle plat : 180°","Angle rentrant : entre 180° et 360°"]},
+      {type:"exemple", titre:"Angles d'un triangle quelconque : 40°, 70°, 70°", etapes:[
+        {texte:"On vérifie que la somme fait 180° :", calcul:"40° + 70° + 70° = 180° ✓"},
+        {texte:"Ces angles sont tous aigus (< 90°). C'est un triangle acutangle."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Classification", difficulte:1, type:"qcm",
+     enonce:"Un angle de 135° est…",
+     options:["Aigu","Droit","Obtus","Plat"], correct:2, explication:"90° < 135° < 180° → angle obtus."},
+    {id:"ex2", titre:"QCM — Complémentaires", difficulte:2, type:"qcm",
+     enonce:"Deux angles complémentaires ont une somme de :",
+     options:["90°","180°","360°","270°"], correct:0, explication:"Deux angles complémentaires ont une somme de 90°."},
+    {id:"ex3", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"Dans un triangle, deux angles mesurent 55° et 70°. Le troisième mesure ___ °.",
+     answer:"55", hint:"La somme des angles d'un triangle = 180°", explication:"180 - 55 - 70 = 55°."},
+    {id:"ex4", titre:"QCM — Supplémentaires", difficulte:2, type:"qcm",
+     enonce:"L'angle supplémentaire de 47° est :",
+     options:["133°","43°","313°","53°"], correct:0, explication:"180° - 47° = 133°."},
+    {id:"ex5", titre:"QCM — Triangle rectangle", difficulte:3, type:"qcm",
+     enonce:"Dans un triangle rectangle, un angle mesure 32°. Le troisième angle mesure :",
+     options:["58°","148°","68°","32°"], correct:0, explication:"90° + 32° + x = 180° → x = 58°."}
+  ],
+  fiche:{titre:"Fiche — Les angles", sections:[
+    {titre:"Types", items:["Aigu : 0° < α < 90°","Droit : α = 90°","Obtus : 90° < α < 180°","Plat : α = 180°"]},
+    {titre:"Propriétés", items:["Triangle : somme = 180°","Quadrilatère : somme = 360°","Supplémentaires : somme = 180°","Complémentaires : somme = 90°"]}
+  ]}
+},
+
+// ═══ 5ÈME ═══
+{
+  id:"5e-puissances", titre:"Puissances entières", niveau:"5e", chapitre:"Calcul",
+  description:"Comprendre et calculer les puissances, les puissances de 10, la notation scientifique.", icone:"xⁿ", couleur:"#185fa5",
+  lecons:[
+    { id:"l1", titre:"Définition et calcul", contenu:[
+      {type:"intro", texte:"Une puissance aⁿ représente le produit de n facteurs tous égaux à a. C'est une notation compacte pour des multiplications répétées."},
+      {type:"regle", titre:"Définition", texte:"Pour tout entier n ≥ 1 :", items:["aⁿ = a × a × … × a (n fois)","a⁰ = 1 (pour a ≠ 0)","a¹ = a"]},
+      {type:"exemple", titre:"Calculer 2⁵", etapes:[
+        {texte:"On développe le produit :", calcul:"2⁵ = 2×2×2×2×2 = 32"},
+        {texte:"Autre méthode : 2⁴ = 16, donc 2⁵ = 16 × 2 = 32."}
+      ]}
+    ]},
+    { id:"l2", titre:"Puissances de 10", contenu:[
+      {type:"intro", texte:"Les puissances de 10 permettent d'écrire facilement de très grands ou très petits nombres (notation scientifique)."},
+      {type:"regle", titre:"Puissances de 10", texte:"Quelques repères :", items:["10¹ = 10","10² = 100","10³ = 1 000","10⁶ = 1 000 000","10⁻¹ = 0,1","10⁻³ = 0,001"]},
+      {type:"exemple", titre:"Écriture scientifique de 45 800", etapes:[
+        {texte:"On cherche un nombre entre 1 et 10, puis la puissance de 10 :", calcul:"45 800 = 4,58 × 10 000 = 4,58 × 10⁴"},
+        {texte:"Notation scientifique : 4,58 × 10⁴"}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Calcul de puissance", difficulte:1, type:"qcm",
+     enonce:"3⁴ vaut :",
+     options:["12","81","64","27"], correct:1, explication:"3⁴ = 3×3×3×3 = 81."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"2⁸ = ___", answer:"256", hint:"2⁴=16, 2⁸=16²", explication:"2⁸ = 256."},
+    {id:"ex3", titre:"QCM — Notation scientifique", difficulte:2, type:"qcm",
+     enonce:"3 750 000 en notation scientifique :",
+     options:["37,5 × 10⁵","3,75 × 10⁶","0,375 × 10⁷","3,75 × 10⁷"], correct:1,
+     explication:"3 750 000 = 3,75 × 1 000 000 = 3,75 × 10⁶."},
+    {id:"ex4", titre:"QCM — Comparer", difficulte:2, type:"qcm",
+     enonce:"Lequel est le plus grand ?",
+     options:["2¹⁰","10²","3⁵","5³"], correct:0,
+     explication:"2¹⁰=1024, 10²=100, 3⁵=243, 5³=125. Donc 2¹⁰ est le plus grand."},
+    {id:"ex5", titre:"Calcul — Règles", difficulte:3, type:"fill",
+     enonce:"2³ × 2⁴ = 2^___", answer:"7", hint:"aᵐ × aⁿ = aᵐ⁺ⁿ", explication:"2³ × 2⁴ = 2^(3+4) = 2⁷."}
+  ],
+  fiche:{titre:"Fiche — Puissances", sections:[
+    {titre:"Règles de calcul", items:["aᵐ × aⁿ = aᵐ⁺ⁿ","aᵐ ÷ aⁿ = aᵐ⁻ⁿ","(aᵐ)ⁿ = aᵐⁿ","a⁰ = 1"]},
+    {titre:"Notation scientifique", items:["a × 10ⁿ avec 1 ≤ a < 10","Multiplier par 10ⁿ : déplacer la virgule de n rangs"]}
+  ]}
+},
+
+{id:"5e-fractions-operations", titre:"Opérations sur les fractions", niveau:"5e", chapitre:"Fractions",
+  description:"Additionner, soustraire, multiplier et diviser des fractions.", icone:"÷", couleur:"#185fa5",
+  lecons:[
+    { id:"l1", titre:"Addition et soustraction", contenu:[
+      {type:"intro", texte:"Pour additionner deux fractions, il faut qu'elles aient le même dénominateur (dénominateur commun)."},
+      {type:"regle", titre:"Addition de fractions", texte:"Méthode :", items:["Trouver le PPCM des dénominateurs","Réduire au même dénominateur","Additionner les numérateurs","Simplifier si possible"]},
+      {type:"exemple", titre:"Calculer 2/3 + 3/4", etapes:[
+        {texte:"Le PPCM de 3 et 4 est 12. On réduit :", calcul:"2/3 = 8/12\n3/4 = 9/12"},
+        {texte:"On additionne :", calcul:"8/12 + 9/12 = 17/12"}
+      ]}
+    ]},
+    { id:"l2", titre:"Multiplication et division", contenu:[
+      {type:"intro", texte:"La multiplication de fractions est plus simple : on multiplie numérateurs entre eux et dénominateurs entre eux."},
+      {type:"regle", titre:"Règles", texte:"Pour a/b et c/d :", items:["Multiplication : (a/b) × (c/d) = (a×c)/(b×d)","Division : (a/b) ÷ (c/d) = (a/b) × (d/c) = (a×d)/(b×c)"]},
+      {type:"exemple", titre:"2/3 × 9/4", etapes:[
+        {texte:"On simplifie avant de multiplier :", calcul:"2/3 × 9/4 = (2×9)/(3×4) = 18/12 = 3/2"},
+        {texte:"Ou en simplifiant : 2/4 × 9/3 = 1/2 × 3 = 3/2."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Addition", difficulte:1, type:"qcm",
+     enonce:"1/4 + 1/4 = ?",
+     options:["2/8","1/2","1/8","2/4"], correct:1, explication:"1/4+1/4 = 2/4 = 1/2."},
+    {id:"ex2", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"1/3 + 1/6 = ?/6 (numérateur)", answer:"3", hint:"1/3 = 2/6", explication:"2/6 + 1/6 = 3/6 = 1/2."},
+    {id:"ex3", titre:"QCM — Multiplication", difficulte:2, type:"qcm",
+     enonce:"3/5 × 10/9 = ?",
+     options:["30/45","2/3","6/9","30/9"], correct:1, explication:"(3×10)/(5×9) = 30/45 = 2/3."},
+    {id:"ex4", titre:"QCM — Division", difficulte:2, type:"qcm",
+     enonce:"3/4 ÷ 3/8 = ?",
+     options:["1/2","9/32","2","8/9"], correct:2, explication:"3/4 × 8/3 = 24/12 = 2."},
+    {id:"ex5", titre:"Calcul — Problème", difficulte:3, type:"fill",
+     enonce:"Un tiers de 2/5 est égal à ?/15 (donner le numérateur)", answer:"2",
+     hint:"(1/3) × (2/5) = ?", explication:"1/3 × 2/5 = 2/15."}
+  ],
+  fiche:{titre:"Fiche — Opérations sur fractions", sections:[
+    {titre:"Addition/Soustraction", items:["Même dénominateur → additionner numérateurs","Dénominateurs différents → trouver PPCM","Simplifier le résultat"]},
+    {titre:"Multiplication/Division", items:["×: numérateur×numérateur, dénominateur×dénominateur","÷: multiplier par l'inverse","Simplifier en croix avant de calculer"]}
+  ]}
+},
+
+{id:"5e-equations-intro", titre:"Introduction aux équations", niveau:"5e", chapitre:"Algèbre",
+  description:"Résoudre des équations du premier degré à une inconnue par opérations.", icone:"x=", couleur:"#185fa5",
+  lecons:[
+    { id:"l1", titre:"Qu'est-ce qu'une équation ?", contenu:[
+      {type:"intro", texte:"Une équation est une égalité contenant une inconnue. Résoudre une équation, c'est trouver la valeur de l'inconnue qui rend l'égalité vraie."},
+      {type:"regle", titre:"Principe d'équivalence", texte:"On peut :", items:["Ajouter le même nombre des deux côtés","Soustraire le même nombre des deux côtés","Multiplier ou diviser par un même nombre (≠ 0)"]},
+      {type:"exemple", titre:"Résoudre 3x + 5 = 14", etapes:[
+        {texte:"On isole x en faisant des opérations inverses :", calcul:"3x + 5 = 14\n3x = 14 − 5\n3x = 9\nx = 9 ÷ 3\nx = 3"},
+        {texte:"Vérification : 3×3 + 5 = 9 + 5 = 14 ✓"}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Solution", difficulte:1, type:"qcm",
+     enonce:"Quelle valeur vérifie x + 7 = 12 ?",
+     options:["x = 5","x = 19","x = 7","x = 12"], correct:0, explication:"12 − 7 = 5."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"Résoudre : 2x = 18 → x = ___", answer:"9", hint:"Diviser les deux membres par 2.", explication:"18 ÷ 2 = 9."},
+    {id:"ex3", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"Résoudre 4x − 3 = 13 :",
+     options:["x = 4","x = 5","x = 10","x = 2,5"], correct:1, explication:"4x = 16, x = 4."},
+    {id:"ex4", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"3x + 2 = 2x + 7 → x = ___", answer:"5", hint:"Regrouper les x d'un côté.", explication:"3x−2x = 7−2, x = 5."},
+    {id:"ex5", titre:"QCM — Problème", difficulte:3, type:"qcm",
+     enonce:"Un nombre augmenté de 8 donne le double de ce nombre. Ce nombre est :",
+     options:["8","4","16","6"], correct:0, explication:"x+8 = 2x → x = 8."}
+  ],
+  fiche:{titre:"Fiche — Équations 1er degré", sections:[
+    {titre:"Méthode", items:["Passer termes en x d'un côté, constantes de l'autre","Diviser par le coefficient de x","Vérifier en substituant"]},
+    {titre:"Pièges", items:["Changer le signe quand on passe de l'autre côté","Ne pas oublier de vérifier","Attention au signe si on divise par un négatif"]}
+  ]}
+},
+
+{id:"5e-triangles", titre:"Triangles et théorèmes", niveau:"5e", chapitre:"Géométrie",
+  description:"Pythagore, tiers proportionnel et propriétés des triangles.", icone:"△", couleur:"#185fa5",
+  lecons:[
+    { id:"l1", titre:"Théorème de Pythagore", contenu:[
+      {type:"intro", texte:"Dans un triangle rectangle, le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés."},
+      {type:"regle", titre:"Théorème de Pythagore", texte:"Si ABC est rectangle en A :", items:["BC² = AB² + AC²","BC est l'hypoténuse (côté opposé à l'angle droit)","On peut aussi vérifier : si BC² = AB² + AC² alors le triangle est rectangle"]},
+      {type:"exemple", titre:"AB = 3, AC = 4. Calculer BC.", etapes:[
+        {texte:"On applique Pythagore :", calcul:"BC² = 3² + 4² = 9 + 16 = 25\nBC = √25 = 5"},
+        {texte:"C'est un triangle 3-4-5, célèbre triplet pythagoricien."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Pythagore", difficulte:1, type:"qcm",
+     enonce:"Triangle rectangle, jambes 5 et 12. Hypoténuse ?",
+     options:["13","17","7","169"], correct:0, explication:"5²+12² = 25+144 = 169 = 13²."},
+    {id:"ex2", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"Hypoténuse 10, jambe 6. L'autre jambe vaut ___ (entier).",
+     answer:"8", hint:"6²+x²=10²", explication:"100-36=64, √64=8."},
+    {id:"ex3", titre:"QCM — Réciproque", difficulte:2, type:"qcm",
+     enonce:"Triangle de côtés 7, 24, 25. Est-il rectangle ?",
+     options:["Oui, en face de 25","Non","Oui, en face de 7","On ne peut pas savoir"], correct:0,
+     explication:"7²+24² = 49+576 = 625 = 25². Oui, rectangle en face de 25."},
+    {id:"ex4", titre:"QCM — Problème", difficulte:2, type:"qcm",
+     enonce:"Une échelle de 5 m s'appuie contre un mur. Son pied est à 3 m du mur. Elle atteint quelle hauteur ?",
+     options:["4 m","2 m","√34 m","3 m"], correct:0, explication:"5²−3²=25−9=16, √16=4 m."},
+    {id:"ex5", titre:"QCM — Triplets", difficulte:3, type:"qcm",
+     enonce:"Parmi ces triplets, lequel n'est PAS pythagoricien ?",
+     options:["3,4,5","5,12,13","8,15,17","6,8,11"], correct:3,
+     explication:"6²+8²=36+64=100≠121=11². Le triplet 6,8,11 n'est pas pythagoricien."}
+  ],
+  fiche:{titre:"Fiche — Théorème de Pythagore", sections:[
+    {titre:"Théorème", items:["ABC rectangle en A → BC² = AB² + AC²","Calculer une jambe : AB² = BC² − AC²"]},
+    {titre:"Triplets célèbres", items:["3 − 4 − 5","5 − 12 − 13","8 − 15 − 17","7 − 24 − 25"]}
+  ]}
+},
+
+{id:"5e-statistiques", titre:"Statistiques descriptives", niveau:"5e", chapitre:"Statistiques",
+  description:"Moyenne, médiane, étendue. Lire et construire des tableaux et diagrammes.", icone:"📊", couleur:"#185fa5",
+  lecons:[
+    { id:"l1", titre:"Moyenne et médiane", contenu:[
+      {type:"intro", texte:"En statistiques, on cherche à résumer une série de données par des indicateurs simples : la moyenne, la médiane et l'étendue."},
+      {type:"regle", titre:"Indicateurs statistiques", texte:"Définitions :", items:["Moyenne = somme de toutes les valeurs ÷ nombre de valeurs","Médiane = valeur centrale une fois les données triées","Étendue = valeur max − valeur min"]},
+      {type:"exemple", titre:"Notes : 8, 12, 14, 10, 16", etapes:[
+        {texte:"Moyenne :", calcul:"(8+12+14+10+16) ÷ 5 = 60 ÷ 5 = 12"},
+        {texte:"Données triées : 8, 10, 12, 14, 16 → Médiane = 12 (3e valeur sur 5)"},
+        {texte:"Étendue = 16 − 8 = 8."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Moyenne", difficulte:1, type:"qcm",
+     enonce:"Moyenne de 4, 8, 6, 10, 12 :",
+     options:["8","9","10","7"], correct:0, explication:"(4+8+6+10+12)÷5 = 40÷5 = 8."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"Étendue de la série 3, 7, 2, 15, 9, 11 :",
+     answer:"13", hint:"Max − Min", explication:"15 − 2 = 13."},
+    {id:"ex3", titre:"QCM — Médiane", difficulte:2, type:"qcm",
+     enonce:"Médiane de 5, 3, 9, 1, 7 (triée: 1,3,5,7,9) :",
+     options:["3","5","7","4"], correct:1, explication:"5 valeurs, la 3e est 5."},
+    {id:"ex4", titre:"QCM — Problème", difficulte:2, type:"qcm",
+     enonce:"Après 4 contrôles (12, 14, 10, 16), quelle note faut-il obtenir au 5e pour avoir 13 de moyenne ?",
+     options:["13","15","11","17"], correct:0, explication:"Total cible = 13×5=65. 65-(12+14+10+16)=65-52=13."},
+    {id:"ex5", titre:"QCM — Diagramme", difficulte:3, type:"qcm",
+     enonce:"Un diagramme circulaire représente 120 élèves. Un secteur à 90° correspond à combien d'élèves ?",
+     options:["30","40","45","90"], correct:0, explication:"90°÷360° = 1/4. 120×1/4 = 30 élèves."}
+  ],
+  fiche:{titre:"Fiche — Statistiques", sections:[
+    {titre:"Indicateurs", items:["Moyenne = somme ÷ effectif","Médiane = valeur centrale (trier d'abord)","Étendue = max − min"]},
+    {titre:"Diagrammes", items:["Bâtons : fréquences de chaque valeur","Circulaire : angle = (fréq÷total)×360°","Histogramme : données groupées"]}
+  ]}
+},
+
+// ═══ 4ÈME ═══
+{id:"4e-developpement-factorisation", titre:"Développement et factorisation", niveau:"4e", chapitre:"Algèbre",
+  description:"Développer et factoriser des expressions algébriques, utiliser les identités remarquables.", icone:"(a+b)²", couleur:"#0f6e56",
+  lecons:[
+    { id:"l1", titre:"Développer une expression", contenu:[
+      {type:"intro", texte:"Développer une expression, c'est l'écrire comme une somme (sans parenthèses) en utilisant la distributivité."},
+      {type:"regle", titre:"Distributivité", texte:"Règles :", items:["k(a+b) = ka + kb","(a+b)(c+d) = ac + ad + bc + bd"]},
+      {type:"exemple", titre:"Développer (x+3)(x−2)", etapes:[
+        {texte:"On applique la règle (a+b)(c+d) :", calcul:"(x+3)(x−2) = x·x + x·(−2) + 3·x + 3·(−2)\n= x² − 2x + 3x − 6\n= x² + x − 6"},
+        {texte:"Résultat : x² + x − 6"}
+      ]}
+    ]},
+    { id:"l2", titre:"Identités remarquables", contenu:[
+      {type:"intro", texte:"Trois identités à connaître par cœur qui permettent de développer ou factoriser très rapidement."},
+      {type:"regle", titre:"Les trois identités", texte:"Pour tous réels a et b :", items:["(a+b)² = a² + 2ab + b²","(a−b)² = a² − 2ab + b²","(a+b)(a−b) = a² − b²"]},
+      {type:"exemple", titre:"Développer (2x+3)²", etapes:[
+        {texte:"On identifie a=2x, b=3 et on applique (a+b)² :", calcul:"(2x+3)² = (2x)² + 2·(2x)·3 + 3²\n= 4x² + 12x + 9"},
+        {texte:"Résultat : 4x² + 12x + 9"}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Développer", difficulte:1, type:"qcm",
+     enonce:"3(x + 5) développé donne :",
+     options:["3x + 15","3x + 5","x + 15","3x × 5"], correct:0, explication:"3×x + 3×5 = 3x + 15."},
+    {id:"ex2", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"(x+4)(x+2) = x² + ___x + 8 (compléter le coefficient)",
+     answer:"6", hint:"Le terme en x = 4x + 2x", explication:"x²+2x+4x+8 = x²+6x+8."},
+    {id:"ex3", titre:"QCM — Identité remarquable", difficulte:2, type:"qcm",
+     enonce:"(x−5)² vaut :",
+     options:["x²−25","x²−10x+25","x²+10x−25","x²−5x+25"], correct:1,
+     explication:"(a−b)² = a²−2ab+b² = x²−10x+25."},
+    {id:"ex4", titre:"QCM — Factoriser", difficulte:3, type:"qcm",
+     enonce:"x²−9 se factorise en :",
+     options:["(x−3)(x+3)","(x−9)(x+1)","(x−3)²","x(x−9)"], correct:0,
+     explication:"x²−9 = x²−3² = (x−3)(x+3) (identité a²−b²)."},
+    {id:"ex5", titre:"Calcul", difficulte:3, type:"fill",
+     enonce:"(2x−1)(2x+1) = 4x² − ___", answer:"1",
+     hint:"(a−b)(a+b) = a²−b²", explication:"(2x)²−1² = 4x²−1."}
+  ],
+  fiche:{titre:"Fiche — Développement & Factorisation", sections:[
+    {titre:"Identités remarquables", items:["(a+b)² = a²+2ab+b²","(a−b)² = a²−2ab+b²","(a+b)(a−b) = a²−b²"]},
+    {titre:"Méthodes", items:["Développer : enlever les parenthèses","Factoriser : mettre en facteur commun","Identifier la forme a²−b² pour factoriser"]}
+  ]}
+},
+
+{id:"4e-probabilites-intro", titre:"Introduction aux probabilités", niveau:"4e", chapitre:"Probabilités",
+  description:"Comprendre la notion de probabilité, calculer des probabilités simples.", icone:"🎲", couleur:"#0f6e56",
+  lecons:[
+    { id:"l1", titre:"Probabilité d'un événement", contenu:[
+      {type:"intro", texte:"La probabilité mesure la chance qu'un événement se produise. Elle est comprise entre 0 (impossible) et 1 (certain)."},
+      {type:"regle", titre:"Probabilité classique", texte:"Lorsque tous les résultats sont équiprobables :", items:["P(A) = nombre de résultats favorables / nombre total de résultats","0 ≤ P(A) ≤ 1","P(évènement certain) = 1","P(évènement impossible) = 0"]},
+      {type:"exemple", titre:"Lancer un dé : P(obtenir un chiffre pair)", etapes:[
+        {texte:"Les résultats favorables : 2, 4, 6 → 3 résultats", calcul:"P(pair) = 3/6 = 1/2 = 0,5"},
+        {texte:"Il y a 50% de chances d'obtenir un chiffre pair."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Lancer de dé", difficulte:1, type:"qcm",
+     enonce:"P(obtenir 6) avec un dé équilibré :",
+     options:["1/6","1/2","1/3","1"], correct:0, explication:"1 résultat favorable sur 6 possibles = 1/6."},
+    {id:"ex2", titre:"QCM — Tirage de carte", difficulte:1, type:"qcm",
+     enonce:"Dans un jeu de 52 cartes, P(tirer un as) =",
+     options:["4/52 = 1/13","1/52","4/13","1/4"], correct:0, explication:"4 as dans 52 cartes = 4/52 = 1/13."},
+    {id:"ex3", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"Sac avec 3 boules rouges, 5 bleues, 2 vertes. P(rouge) = ?/10 (numérateur)",
+     answer:"3", hint:"3 résultats favorables sur 10", explication:"P(rouge) = 3/10."},
+    {id:"ex4", titre:"QCM — Complémentaire", difficulte:2, type:"qcm",
+     enonce:"P(A) = 0,3. Quelle est P(non A) ?",
+     options:["0,7","0,3","1,3","0"], correct:0, explication:"P(non A) = 1 − P(A) = 1 − 0,3 = 0,7."},
+    {id:"ex5", titre:"QCM — Problème", difficulte:3, type:"qcm",
+     enonce:"On lance 2 pièces. P(obtenir 2 faces) =",
+     options:["1/2","1/4","3/4","1/3"], correct:1, explication:"Résultats possibles : FF, FP, PF, PP. 1 résultat favorable → 1/4."}
+  ],
+  fiche:{titre:"Fiche — Probabilités", sections:[
+    {titre:"Définition", items:["P(A) = résultats favorables / résultats totaux","0 ≤ P(A) ≤ 1","P(certain) = 1, P(impossible) = 0"]},
+    {titre:"Propriétés", items:["P(non A) = 1 − P(A)","P(A ou B) = P(A) + P(B) si A et B sont incompatibles","Fréquence ≈ probabilité pour grand nombre d'essais"]}
+  ]}
+},
+
+{id:"4e-geometrie-cercles", titre:"Le cercle et ses propriétés", niveau:"4e", chapitre:"Géométrie",
+  description:"Circonférence, aire d'un disque, angles inscrits, théorème de Thalès.", icone:"○", couleur:"#0f6e56",
+  lecons:[
+    { id:"l1", titre:"Cercle : périmètre et aire", contenu:[
+      {type:"intro", texte:"Un cercle de rayon r a une circonférence et une aire calculables grâce à π ≈ 3,14159…"},
+      {type:"regle", titre:"Formules du cercle", texte:"Pour un cercle de rayon r :", items:["Circonférence : C = 2πr","Aire du disque : A = πr²","Diamètre : d = 2r"]},
+      {type:"exemple", titre:"Cercle de rayon 5 cm", etapes:[
+        {texte:"Circonférence :", calcul:"C = 2 × π × 5 ≈ 31,4 cm"},
+        {texte:"Aire du disque :", calcul:"A = π × 5² = 25π ≈ 78,5 cm²"}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Circonférence", difficulte:1, type:"qcm",
+     enonce:"Cercle de rayon 7 cm. Circonférence ≈",
+     options:["44 cm","14 cm","154 cm","22 cm"], correct:0, explication:"C = 2π×7 ≈ 43,98 ≈ 44 cm."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"Aire d'un cercle de rayon 3 cm ≈ ___ cm² (arrondir à l'unité)",
+     answer:"28", hint:"A = π × r²", explication:"π × 9 ≈ 28,27 ≈ 28 cm²."},
+    {id:"ex3", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"Un cercle a un périmètre de 62,8 cm. Son rayon vaut environ :",
+     options:["10 cm","5 cm","20 cm","31,4 cm"], correct:0, explication:"r = C/(2π) = 62,8/6,28 = 10 cm."},
+    {id:"ex4", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"Aire d'un demi-disque de diamètre 10 cm ≈",
+     options:["157 cm²","78,5 cm²","39,3 cm²","314 cm²"], correct:2,
+     explication:"Rayon=5. Aire disque=π×25≈78,5. Demi = 39,3 cm²."},
+    {id:"ex5", titre:"QCM — Thalès", difficulte:3, type:"qcm",
+     enonce:"En utilisant Thalès : AB=6, AM=3, MC=4. AC=?",
+     options:["8","2","12","6"], correct:0, explication:"Thalès : AC/MC = AB/AM → AC = MC×AB/AM = 4×6/3 = 8."}
+  ],
+  fiche:{titre:"Fiche — Cercle", sections:[
+    {titre:"Formules", items:["C = 2πr = πd","A = πr²","r = C/(2π)"]},
+    {titre:"Thalès", items:["Si AM/AB = AN/AC = MN/BC","Les droites MN et BC sont parallèles"]}
+  ]}
+},
+
+{id:"4e-systemes", titre:"Systèmes d'équations", niveau:"4e", chapitre:"Algèbre",
+  description:"Résoudre des systèmes de deux équations à deux inconnues.", icone:"⟺", couleur:"#0f6e56",
+  lecons:[
+    { id:"l1", titre:"Méthode par substitution", contenu:[
+      {type:"intro", texte:"Un système de deux équations permet de trouver deux inconnues (x et y) simultanément."},
+      {type:"regle", titre:"Méthode de substitution", texte:"Étapes :", items:["1. Isoler une variable dans une équation","2. Substituer dans l'autre équation","3. Résoudre l'équation obtenue","4. Trouver l'autre variable par substitution"]},
+      {type:"exemple", titre:"{ x + y = 10 ; 2x − y = 5 }", etapes:[
+        {texte:"De la 1ère équation : y = 10 − x", calcul:"On substitue dans la 2e :\n2x − (10−x) = 5\n2x − 10 + x = 5\n3x = 15\nx = 5"},
+        {texte:"Puis : y = 10 − 5 = 5. Solution : (5; 5)."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Vérification", difficulte:1, type:"qcm",
+     enonce:"Est-ce que (2; 3) est solution de { x+y=5 ; x−y=−1 } ?",
+     options:["Oui","Non, seulement la 1ère","Non, seulement la 2e","Non"], correct:0,
+     explication:"2+3=5 ✓ et 2−3=−1 ✓. Oui c'est une solution."},
+    {id:"ex2", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"{ x+y=8 ; x−y=2 } → x = ___", answer:"5",
+     hint:"Additionner les deux équations", explication:"2x=10, x=5. Puis y=3."},
+    {id:"ex3", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"{ 2x+y=7 ; x+2y=8 } → y = ?",
+     options:["3","2","4","1"], correct:0, explication:"De la 1ère: y=7−2x. Dans la 2e: x+2(7−2x)=8 → x+14−4x=8 → −3x=−6 → x=2, y=3."},
+    {id:"ex4", titre:"QCM — Problème", difficulte:3, type:"qcm",
+     enonce:"2 pizzas + 1 boisson = 17€. 1 pizza + 3 boissons = 16€. Prix d'une pizza ?",
+     options:["7€","5€","8€","6€"], correct:0, explication:"2p+b=17 et p+3b=16. De la 1ère b=17−2p. Dans la 2e: p+3(17−2p)=16 → p+51−6p=16 → −5p=−35 → p=7."},
+    {id:"ex5", titre:"Calcul", difficulte:3, type:"fill",
+     enonce:"{ 3x−2y=1 ; x+y=7 } → y = ___", answer:"4",
+     hint:"Isoler x dans la 2e équation", explication:"x=7−y. Dans la 1ère: 3(7−y)−2y=1 → 21−5y=1 → y=4."}
+  ],
+  fiche:{titre:"Fiche — Systèmes", sections:[
+    {titre:"Méthodes", items:["Substitution : isoler une variable puis substituer","Combinaison : additionner/soustraire pour éliminer une variable"]},
+    {titre:"Vérification", items:["Remplacer dans les DEUX équations","Si les deux sont vraies, c'est la solution"]}
+  ]}
+},
+
+{id:"4e-fonctions-lineaires", titre:"Fonctions linéaires et affines", niveau:"4e", chapitre:"Fonctions",
+  description:"Comprendre et représenter les fonctions f(x)=ax et f(x)=ax+b.", icone:"f(x)", couleur:"#0f6e56",
+  lecons:[
+    { id:"l1", titre:"Fonctions linéaires f(x) = ax", contenu:[
+      {type:"intro", texte:"Une fonction linéaire est de la forme f(x) = ax. Son graphe est une droite passant par l'origine."},
+      {type:"regle", titre:"Propriétés", texte:"Pour f(x) = ax :", items:["Le coefficient a est la pente de la droite","Si a > 0 : la droite monte","Si a < 0 : la droite descend","f(0) = 0 (passe par l'origine)"]},
+      {type:"exemple", titre:"f(x) = 2x", etapes:[
+        {texte:"Tableau de valeurs :", calcul:"x = −2 → f(−2) = −4\nx = 0 → f(0) = 0\nx = 1 → f(1) = 2\nx = 3 → f(3) = 6"},
+        {texte:"La droite passe par (0;0) et monte avec pente 2."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Linéaire ?", difficulte:1, type:"qcm",
+     enonce:"Laquelle est une fonction linéaire ?",
+     options:["f(x) = 3x+1","f(x) = 3x","f(x) = x²","f(x) = 3"], correct:1, explication:"f(x)=3x est linéaire (forme ax, sans constante)."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"f(x) = −4x. f(3) = ___", answer:"-12", hint:"Remplacer x par 3", explication:"f(3) = −4×3 = −12."},
+    {id:"ex3", titre:"QCM — Affine", difficulte:2, type:"qcm",
+     enonce:"g(x) = 2x − 3. g(5) = ?",
+     options:["7","13","−3","10"], correct:0, explication:"2×5−3 = 10−3 = 7."},
+    {id:"ex4", titre:"QCM — Ordonnée à l'origine", difficulte:2, type:"qcm",
+     enonce:"h(x) = 5x − 2. Valeur de h(0) :",
+     options:["5","−2","0","2"], correct:1, explication:"h(0) = 5×0−2 = −2. C'est l'ordonnée à l'origine."},
+    {id:"ex5", titre:"QCM — Pente", difficulte:3, type:"qcm",
+     enonce:"Une droite passe par (0;1) et (2;5). Son équation est :",
+     options:["y=2x+1","y=x+1","y=4x+1","y=2x−1"], correct:0,
+     explication:"Pente = (5−1)/(2−0) = 2. Ordonnée origine = 1. Équation : y=2x+1."}
+  ],
+  fiche:{titre:"Fiche — Fonctions", sections:[
+    {titre:"Formes", items:["Linéaire : f(x)=ax (passe par l'origine)","Affine : f(x)=ax+b (b=ordonnée à l'origine)","Pente a = (y₂−y₁)/(x₂−x₁)"]},
+    {titre:"Graphes", items:["a>0 : droite croissante","a<0 : droite décroissante","a=0 : droite horizontale (constante)"]}
+  ]}
+},
+
+// ═══ 3ÈME ═══
+{id:"3e-equations-second-degre", titre:"Équations du 2nd degré", niveau:"3e", chapitre:"Algèbre",
+  description:"Résoudre les équations ax²+bx+c=0 avec le discriminant.", icone:"Δ", couleur:"#b5830a",
+  lecons:[
+    { id:"l1", titre:"Le discriminant", contenu:[
+      {type:"intro", texte:"Une équation du second degré ax² + bx + c = 0 peut avoir 0, 1 ou 2 solutions réelles selon le signe du discriminant Δ."},
+      {type:"regle", titre:"Méthode du discriminant", texte:"Calculer Δ = b² − 4ac :", items:["Si Δ < 0 : pas de solution réelle","Si Δ = 0 : une solution x₀ = −b/(2a)","Si Δ > 0 : deux solutions x₁ = (−b−√Δ)/(2a) et x₂ = (−b+√Δ)/(2a)"]},
+      {type:"exemple", titre:"Résoudre x² − 5x + 6 = 0", etapes:[
+        {texte:"a=1, b=−5, c=6. On calcule Δ :", calcul:"Δ = (−5)² − 4×1×6 = 25 − 24 = 1"},
+        {texte:"Δ > 0 : deux solutions :", calcul:"x₁ = (5−1)/2 = 2\nx₂ = (5+1)/2 = 3"},
+        {texte:"Solutions : x = 2 ou x = 3."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Discriminant", difficulte:1, type:"qcm",
+     enonce:"Pour x²−4x+4=0, Δ vaut :",
+     options:["0","16","−4","4"], correct:0, explication:"Δ = 16 − 4×1×4 = 16−16 = 0."},
+    {id:"ex2", titre:"QCM — Nombre de solutions", difficulte:1, type:"qcm",
+     enonce:"Si Δ = −3, l'équation a :",
+     options:["2 solutions","1 solution","0 solution réelle","3 solutions"], correct:2,
+     explication:"Δ < 0 → pas de solution réelle."},
+    {id:"ex3", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"x²−7x+12=0. Le produit des solutions x₁×x₂ = ___",
+     answer:"12", hint:"Formule de Viète : x₁×x₂ = c/a", explication:"x₁×x₂ = c/a = 12/1 = 12. (Solutions : 3 et 4)"},
+    {id:"ex4", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"Résoudre 2x²+3x−5=0 :",
+     options:["x=1 ou x=−5/2","x=−1 ou x=5/2","x=5 ou x=−1/2","x=2 ou x=−3"], correct:0,
+     explication:"Δ=9+40=49. x=(−3±7)/4. x₁=(−3+7)/4=1 ou x₂=(−3−7)/4=−5/2."},
+    {id:"ex5", titre:"QCM — Viète", difficulte:3, type:"qcm",
+     enonce:"Pour x²+bx+8=0, la somme des solutions est −3. Trouver b.",
+     options:["b=3","b=−3","b=8","b=−8"], correct:0,
+     explication:"Somme = −b/a = −b = −3 → b = 3."}
+  ],
+  fiche:{titre:"Fiche — Équations 2nd degré", sections:[
+    {titre:"Discriminant", items:["Δ = b²−4ac","Δ>0 : 2 solutions réelles","Δ=0 : 1 solution double","Δ<0 : pas de solution réelle"]},
+    {titre:"Formules de Viète", items:["Somme des racines = −b/a","Produit des racines = c/a","Factorisation : a(x−x₁)(x−x₂)"]}
+  ]}
+},
+
+{id:"3e-trigonometrie", titre:"Trigonométrie dans le triangle rectangle", niveau:"3e", chapitre:"Géométrie",
+  description:"Utiliser sin, cos, tan pour calculer angles et longueurs.", icone:"sin", couleur:"#b5830a",
+  lecons:[
+    { id:"l1", titre:"Les rapports trigonométriques", contenu:[
+      {type:"intro", texte:"Dans un triangle rectangle, les rapports entre les côtés sont constants pour un angle donné. Ces rapports définissent sin, cos et tan."},
+      {type:"regle", titre:"Définitions (angle α)", texte:"Dans un triangle rectangle :", items:["sin(α) = côté opposé / hypoténuse","cos(α) = côté adjacent / hypoténuse","tan(α) = côté opposé / côté adjacent","Moyen mnémotechnique : SOH CAH TOA"]},
+      {type:"exemple", titre:"Triangle ABC rectangle en A, BC=10, angle B=30°", etapes:[
+        {texte:"On cherche AC (côté opposé à B) et AB (côté adjacent à B) :", calcul:"sin(30°) = AC/BC → AC = 10 × sin(30°) = 10 × 0,5 = 5\ncos(30°) = AB/BC → AB = 10 × cos(30°) ≈ 10 × 0,866 ≈ 8,66"},
+        {texte:"AC = 5 cm et AB ≈ 8,66 cm."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Définition", difficulte:1, type:"qcm",
+     enonce:"sin(α) = ?",
+     options:["adjacent/hypoténuse","opposé/hypoténuse","opposé/adjacent","hypoténuse/opposé"], correct:1,
+     explication:"sin = opposé/hypoténuse (SOH)."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"Triangle rectangle. Hypoténuse = 20. Angle = 45°. Côté opposé = ___ (arrondir à l'unité)",
+     answer:"14", hint:"sin(45°) ≈ 0,707", explication:"20 × sin(45°) = 20 × 0,707 ≈ 14,14 ≈ 14."},
+    {id:"ex3", titre:"QCM — tan", difficulte:2, type:"qcm",
+     enonce:"Adjacent=8, opposé=6. tan(α) = ?",
+     options:["3/4","4/3","6/10","10/6"], correct:0, explication:"tan(α) = opposé/adjacent = 6/8 = 3/4."},
+    {id:"ex4", titre:"QCM — Trouver un angle", difficulte:2, type:"qcm",
+     enonce:"cos(α) = 0,5. α vaut :",
+     options:["30°","45°","60°","90°"], correct:2, explication:"cos(60°) = 0,5."},
+    {id:"ex5", titre:"QCM — Problème", difficulte:3, type:"qcm",
+     enonce:"Une rampe de 5 m fait un angle de 15° avec le sol. Quelle est la hauteur ?",
+     options:["5×sin(15°) ≈ 1,29 m","5×cos(15°) ≈ 4,83 m","5×tan(15°)","5/sin(15°)"], correct:0,
+     explication:"La hauteur est le côté opposé à 15°, donc sin(15°)×5 ≈ 1,29 m."}
+  ],
+  fiche:{titre:"Fiche — Trigonométrie", sections:[
+    {titre:"SOH CAH TOA", items:["Sin = Opposé/Hypoténuse","Cos = Adjacent/Hypoténuse","Tan = Opposé/Adjacent"]},
+    {titre:"Valeurs remarquables", items:["sin(30°)=0,5 ; cos(30°)≈0,87","sin(45°)=cos(45°)≈0,71","sin(60°)≈0,87 ; cos(60°)=0,5"]}
+  ]}
+},
+
+{id:"3e-volumes", titre:"Volumes et sections", niveau:"3e", chapitre:"Géométrie",
+  description:"Calculer les volumes des solides : cube, parallélépipède, cylindre, cône, sphère.", icone:"◉", couleur:"#b5830a",
+  lecons:[
+    { id:"l1", titre:"Volumes des solides", contenu:[
+      {type:"intro", texte:"Le volume mesure l'espace occupé par un solide. Il s'exprime en cm³, m³, L (litre = dm³), etc."},
+      {type:"regle", titre:"Formules de volume", texte:"Solides courants :", items:["Cube (côté c) : V = c³","Pavé droit (L×l×h) : V = L×l×h","Cylindre (r, h) : V = πr²h","Cône (r, h) : V = πr²h/3","Sphère (r) : V = (4/3)πr³"]},
+      {type:"exemple", titre:"Cylindre r=3 cm, h=10 cm", etapes:[
+        {texte:"On applique la formule :", calcul:"V = π × 3² × 10 = π × 9 × 10 = 90π ≈ 282,7 cm³"}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Cube", difficulte:1, type:"qcm",
+     enonce:"Volume d'un cube de côté 4 cm :",
+     options:["16 cm³","48 cm³","64 cm³","96 cm³"], correct:2, explication:"V = 4³ = 64 cm³."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"Pavé L=5m, l=3m, h=2m. V = ___ m³", answer:"30",
+     hint:"V = L × l × h", explication:"5 × 3 × 2 = 30 m³."},
+    {id:"ex3", titre:"QCM — Cylindre", difficulte:2, type:"qcm",
+     enonce:"Cylindre r=5cm, h=8cm. V ≈",
+     options:["628 cm³","200 cm³","314 cm³","1256 cm³"], correct:0,
+     explication:"V = π×25×8 = 200π ≈ 628,3 cm³."},
+    {id:"ex4", titre:"QCM — Cône vs cylindre", difficulte:2, type:"qcm",
+     enonce:"Volume d'un cône = ? celui du cylindre de même base et hauteur",
+     options:["1/3","1/2","2/3","3"], correct:0,
+     explication:"V cône = (1/3) V cylindre."},
+    {id:"ex5", titre:"QCM — Sphère", difficulte:3, type:"qcm",
+     enonce:"Sphère de rayon 3 cm. V ≈",
+     options:["113 cm³","36π cm³","28,3 cm³","4π cm³"], correct:0,
+     explication:"V = (4/3)×π×27 = 36π ≈ 113,1 cm³."}
+  ],
+  fiche:{titre:"Fiche — Volumes", sections:[
+    {titre:"Formules", items:["Cube : c³","Pavé : L×l×h","Cylindre : πr²h","Cône : πr²h/3","Sphère : (4/3)πr³"]},
+    {titre:"Conversions", items:["1 m³ = 1 000 dm³ = 1 000 000 cm³","1 L = 1 dm³","1 mL = 1 cm³"]}
+  ]}
+},
+
+{id:"3e-suites-arithmetiques", titre:"Suites arithmétiques", niveau:"3e", chapitre:"Suites",
+  description:"Définir, calculer et représenter les suites arithmétiques.", icone:"...", couleur:"#b5830a",
+  lecons:[
+    { id:"l1", titre:"Définition et propriétés", contenu:[
+      {type:"intro", texte:"Une suite arithmétique est une suite où chaque terme s'obtient en ajoutant une valeur fixe (la raison r) au terme précédent."},
+      {type:"regle", titre:"Propriétés", texte:"Pour une suite (uₙ) de raison r :", items:["uₙ₊₁ = uₙ + r","uₙ = u₀ + n×r (terme général)","La suite est croissante si r > 0, décroissante si r < 0","Somme des termes = n×(u₀+uₙ)/2"]},
+      {type:"exemple", titre:"Suite : 3, 7, 11, 15, …", etapes:[
+        {texte:"Raison : r = 7 − 3 = 4. Premier terme : u₀ = 3.", calcul:"Terme général : uₙ = 3 + 4n\nu₁₀ = 3 + 40 = 43"},
+        {texte:"Le 11ème terme (u₁₀) vaut 43."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Raison", difficulte:1, type:"qcm",
+     enonce:"Suite : 10, 7, 4, 1, … La raison est :",
+     options:["3","−3","10","−10"], correct:1, explication:"r = 7−10 = −3 (suite décroissante)."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"u₀=2, r=5. u₆ = ___", answer:"32", hint:"uₙ = u₀ + n×r", explication:"u₆ = 2 + 6×5 = 32."},
+    {id:"ex3", titre:"QCM — Terme général", difficulte:2, type:"qcm",
+     enonce:"Suite : u₀=1, r=3. quel est u₁₀ ?",
+     options:["31","30","13","41"], correct:0, explication:"u₁₀ = 1 + 10×3 = 31."},
+    {id:"ex4", titre:"QCM — Somme", difficulte:3, type:"qcm",
+     enonce:"Somme 1+2+3+…+100 =",
+     options:["5050","5000","10100","2500"], correct:0, explication:"n=100, u₀=1, uₙ=100. Somme = 100×(1+100)/2 = 5050."},
+    {id:"ex5", titre:"Calcul", difficulte:3, type:"fill",
+     enonce:"Suite : u₀=20, r=−4. À partir de quel rang uₙ devient négatif ? n = ___",
+     answer:"6", hint:"uₙ < 0 → 20 + n×(−4) < 0 → n > 5", explication:"u₅=0, u₆=−4. Donc à partir de n=6."}
+  ],
+  fiche:{titre:"Fiche — Suites arithmétiques", sections:[
+    {titre:"Formules", items:["Terme général : uₙ = u₀ + nr","Relation de récurrence : uₙ₊₁ = uₙ + r","Somme des n+1 premiers termes : (n+1)(u₀+uₙ)/2"]},
+    {titre:"Propriétés", items:["r>0 : croissante","r<0 : décroissante","r=0 : constante","Graphe : points alignés"]}
+  ]}
+},
+
+{id:"3e-statistiques-avancees", titre:"Statistiques avancées", niveau:"3e", chapitre:"Statistiques",
+  description:"Quartiles, boîte à moustaches, fréquences cumulées, fluctuation.", icone:"▭", couleur:"#b5830a",
+  lecons:[
+    { id:"l1", titre:"Quartiles et boîte à moustaches", contenu:[
+      {type:"intro", texte:"Les quartiles divisent une série ordonnée en 4 parties égales. Q1 est le 1er quartile, Q2 la médiane, Q3 le 3ème quartile."},
+      {type:"regle", titre:"Définitions", texte:"Pour une série de n valeurs triées :", items:["Q2 = médiane (valeur du milieu)","Q1 = médiane de la moitié inférieure","Q3 = médiane de la moitié supérieure","Écart interquartile = Q3 − Q1"]},
+      {type:"exemple", titre:"Série : 2, 4, 5, 7, 8, 9, 12", etapes:[
+        {texte:"n=7. Q2 = 7 (4ème valeur)", calcul:"Moitié inf : 2, 4, 5 → Q1 = 4\nMoitié sup : 8, 9, 12 → Q3 = 9"},
+        {texte:"Boîte à moustaches : min=2, Q1=4, Q2=7, Q3=9, max=12."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Médiane", difficulte:1, type:"qcm",
+     enonce:"Série triée : 1,3,5,7,9. Médiane :",
+     options:["5","4","7","3"], correct:0, explication:"5 valeurs, la 3ème est 5."},
+    {id:"ex2", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"Série : 2,4,6,8,10,12. Q1 = ___",
+     answer:"4", hint:"Q1 = médiane de 2,4,6 (moitié inférieure)", explication:"Médiane de 2,4,6 = 4."},
+    {id:"ex3", titre:"QCM — Interquartile", difficulte:2, type:"qcm",
+     enonce:"Q1=15, Q3=27. Écart interquartile :",
+     options:["12","21","42","6"], correct:0, explication:"Q3−Q1 = 27−15 = 12."},
+    {id:"ex4", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"Dans une boîte à moustaches, 50% des données sont entre…",
+     options:["Q1 et Q3","min et max","médiane et Q3","Q1 et médiane"], correct:0,
+     explication:"La boîte (rectangle) contient 50% des données entre Q1 et Q3."},
+    {id:"ex5", titre:"QCM — Fluctuation", difficulte:3, type:"qcm",
+     enonce:"Sondage : 60% favorables sur n=100. Intervalle de fluctuation au seuil 95% :",
+     options:["[50%;70%]","[55%;65%]","[40%;80%]","[59%;61%]"], correct:0,
+     explication:"Intervalle ≈ [p − 1/√n ; p + 1/√n] = [60%−10%;60%+10%] = [50%;70%]."}
+  ],
+  fiche:{titre:"Fiche — Statistiques avancées", sections:[
+    {titre:"Quartiles", items:["Q1 : 25% des données en dessous","Q2 : médiane (50%)","Q3 : 75% des données en dessous","IQ = Q3−Q1"]},
+    {titre:"Fluctuation", items:["Intervalle 95% ≈ [p−1/√n ; p+1/√n]","Plus n est grand, plus l'intervalle est petit"]}
+  ]}
+},
+
+// ═══ SECONDE ═══
+{
+  id:"seconde-fonctions-tableaux-signes", titre:"Tableaux de signes", niveau:"2nde", chapitre:"Fonctions",
+  description:"Étudier le signe d'une expression selon les valeurs de x, dresser des tableaux de signes.", icone:"±", couleur:"#c0392b",
+  lecons:[
+    { id:"l1", titre:"Signe d'un produit et d'un quotient", contenu:[
+      {type:"intro", texte:"Étudier le signe d'une expression, c'est déterminer si elle est positive, négative ou nulle selon les valeurs de la variable."},
+      {type:"regle", titre:"Règle des signes pour un produit", texte:"Pour un produit (ou quotient) de deux facteurs :", items:["(+) × (+) = (+)","(+) × (−) = (−)","(−) × (+) = (−)","(−) × (−) = (+)"]},
+      {type:"regle", titre:"Méthode pour dresser un tableau de signes", texte:"Pour étudier le signe d'une expression f(x) :", items:["1. Identifier les valeurs qui annulent chaque facteur","2. Placer ces valeurs sur une ligne de x, dans l'ordre croissant","3. Étudier le signe de chaque facteur entre ces valeurs","4. Appliquer la règle des signes pour obtenir le signe du produit"]},
+      {type:"exemple", titre:"Exemple — Signe de (2x − 4)(x + 1)", etapes:[
+        {texte:"On cherche les zéros de chaque facteur :", calcul:"2x − 4 = 0 ⟹ x = 2\nx + 1 = 0 ⟹ x = −1"},
+        {texte:"On dresse le tableau de signes :", tableau:{headers:["x","−∞","","−1","","2","","+∞"], lignes:[{label:"2x − 4", valeurs:["−","−","0","+"]},{label:"x + 1", valeurs:["−","0","+","+"]},{label:"(2x−4)(x+1)", valeurs:["+","0","−","0","+"], gras:true}]}},
+        {texte:"Conclusion : (2x − 4)(x + 1) ≥ 0 sur ] −∞ ; −1] ∪ [2 ; +∞["}
+      ]}
+    ]},
+    { id:"l2", titre:"Tableau de signes et inéquations", contenu:[
+      {type:"intro", texte:"Le tableau de signes permet de résoudre des inéquations du type f(x) ≥ 0 ou f(x) ≤ 0."},
+      {type:"regle", titre:"Lire un tableau de signes", texte:"Une fois le tableau dressé :", items:["f(x) > 0 : lire les intervalles où la dernière ligne est «+»","f(x) < 0 : lire les intervalles où la dernière ligne est «−»","f(x) = 0 : lire les valeurs où la dernière ligne vaut 0","Attention aux valeurs interdites (notées ||)"]},
+      {type:"exemple", titre:"Résoudre (x − 1)(x + 3) ≤ 0", etapes:[
+        {texte:"Zéros : x = 1 et x = −3", calcul:""},
+        {texte:"Tableau :", tableau:{headers:["x","−∞","","−3","","1","","+∞"], lignes:[{label:"x − 1", valeurs:["−","−","0","+"]},{label:"x + 3", valeurs:["−","0","+","+"]},{label:"(x−1)(x+3)", valeurs:["+","0","−","0","+"], gras:true}]}},
+        {texte:"La dernière ligne est ≤ 0 sur [−3 ; 1]. Solution : S = [−3 ; 1]"}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Règle des signes", difficulte:1, type:"qcm",
+     enonce:"Le signe de (−)(−) est :",
+     options:["+","−","0","dépend"], correct:0, explication:"(−)×(−) = (+) : deux signes opposés donnent négatif, deux signes identiques donnent positif."},
+    {id:"ex2", titre:"QCM — Tableau de signes", difficulte:2, type:"qcm",
+     enonce:"f(x) = (x−2)(x+4). Sur quel intervalle f(x) > 0 ?",
+     options:["[−4 ; 2]","[−∞ ; −4] ∪ [2 ; +∞[","[−4 ; +∞[","[2 ; +∞["], correct:1,
+     explication:"Les zéros sont −4 et 2. Aux extrémités, le produit est positif."},
+    {id:"ex3", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"(3−x)/(x+2) > 0. Donner la borne où le numérateur s'annule : x = ___",
+     answer:"3", hint:"3−x = 0", explication:"3−x = 0 ⟹ x = 3. C'est un zéro du numérateur."},
+    {id:"ex4", titre:"QCM — Inéquation", difficulte:2, type:"qcm",
+     enonce:"f(x) = (x+1)(x−5). Résoudre f(x) ≤ 0 :",
+     options:["[−1 ; 5]","[5 ; +∞[","[−∞ ; −1]","[−∞ ; −1] ∪ [5 ; +∞["], correct:0,
+     explication:"f≤0 entre les racines : x ∈ [−1 ; 5]."},
+    {id:"ex5", titre:"QCM — Quotient", difficulte:3, type:"qcm",
+     enonce:"g(x) = (x−3)/(x+1). Valeur interdite :",
+     options:["x = 3","x = −1","x = 0","x = 1"], correct:1,
+     explication:"x+1=0 ⟹ x=−1 rend le dénominateur nul (valeur interdite)."}
+  ],
+  fiche:{titre:"Fiche — Tableaux de signes", sections:[
+    {titre:"À retenir", items:["(+)(+)=(+), (−)(−)=(+), (+)(−)=(−)","Quotient : même règle + valeur interdite notée ||","Les racines donnent signe 0 dans la dernière ligne"]},
+    {titre:"Méthode", items:["1. Trouver les zéros","2. Les placer en ordre croissant","3. Déterminer le signe de chaque facteur","4. Combiner avec la règle des signes"]}
+  ]}
+},
+
+{id:"2nde-statistiques", titre:"Statistiques et fréquences", niveau:"2nde", chapitre:"Statistiques",
+  description:"Calcul de fréquences, moyennes pondérées, représentations graphiques.", icone:"∑", couleur:"#c0392b",
+  lecons:[
+    { id:"l1", titre:"Fréquences et moyennes pondérées", contenu:[
+      {type:"intro", texte:"En seconde, on travaille avec des données groupées et des fréquences relatives. La moyenne tient compte du poids (effectif) de chaque valeur."},
+      {type:"regle", titre:"Moyenne pondérée", texte:"Pour des valeurs x_i d'effectifs n_i :", items:["Moyenne = (Σ n_i × x_i) / Σ n_i","Fréquence relative = n_i / N (avec N = effectif total)","Fréquence cumulée = somme des fréquences jusqu'à x_i"]},
+      {type:"exemple", titre:"Notes : 8 (×3), 12 (×5), 16 (×2)", etapes:[
+        {texte:"Effectif total : N = 3+5+2 = 10", calcul:"Moyenne = (8×3 + 12×5 + 16×2) / 10\n= (24 + 60 + 32) / 10 = 116/10 = 11,6"},
+        {texte:"Moyenne de la classe : 11,6/20."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Moyenne pondérée", difficulte:1, type:"qcm",
+     enonce:"Notes : 10 (×4), 14 (×2). Moyenne :",
+     options:["12","11,3","12,5","10"], correct:1, explication:"(10×4+14×2)/(4+2) = (40+28)/6 = 68/6 ≈ 11,3."},
+    {id:"ex2", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"Fréquence relative de 8 élèves sur 40 : ___% ",
+     answer:"20", hint:"8/40 × 100", explication:"8/40 = 0,2 = 20%."},
+    {id:"ex3", titre:"QCM — Médiane", difficulte:2, type:"qcm",
+     enonce:"20 données triées. La médiane est entre les données de rang :",
+     options:["10 et 11","10 et 12","9 et 10","11 et 12"], correct:0,
+     explication:"Pour n=20 pair, médiane = (valeur rang 10 + valeur rang 11)/2."},
+    {id:"ex4", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"Coeff. de variation = écart-type / moyenne. Si CV=0,3 et moy=20, écart-type=?",
+     options:["6","0,015","66,7","0,3"], correct:0, explication:"σ = CV × moy = 0,3 × 20 = 6."},
+    {id:"ex5", titre:"Calcul", difficulte:3, type:"fill",
+     enonce:"Série : 5,8,9,10,11,12,15. Q3 = ___",
+     answer:"12", hint:"Q3 = médiane de la moitié supérieure", explication:"Moitié sup: 11,12,15. Médiane = 12."}
+  ],
+  fiche:{titre:"Fiche — Statistiques 2nde", sections:[
+    {titre:"Indicateurs", items:["Moyenne pondérée = Σ(n_i × x_i) / N","Médiane : 50% des données en dessous","Q1,Q3 : 25%, 75%","Écart-type : dispersion autour de la moyenne"]},
+    {titre:"Représentations", items:["Histogramme : données groupées","Boîte à moustaches : min Q1 Q2 Q3 max","Diagramme en bâtons : données isolées"]}
+  ]}
+},
+
+{id:"2nde-vecteurs", titre:"Les vecteurs", niveau:"2nde", chapitre:"Géométrie",
+  description:"Notion de vecteur, coordonnées, opérations sur les vecteurs.", icone:"→", couleur:"#c0392b",
+  lecons:[
+    { id:"l1", titre:"Définition et coordonnées", contenu:[
+      {type:"intro", texte:"Un vecteur est caractérisé par sa direction, son sens et sa norme (longueur). Dans un repère, il est défini par ses coordonnées."},
+      {type:"regle", titre:"Coordonnées d'un vecteur", texte:"Si A(x_A; y_A) et B(x_B; y_B) :", items:["Vecteur AB a pour coordonnées (x_B − x_A ; y_B − y_A)","Norme : |AB| = √((x_B−x_A)² + (y_B−y_A)²)","Vecteurs égaux si même direction, sens, norme"]},
+      {type:"exemple", titre:"A(1; 3) et B(4; 7). Vecteur AB ?", etapes:[
+        {texte:"On calcule les coordonnées :", calcul:"AB = (4−1 ; 7−3) = (3 ; 4)"},
+        {texte:"Norme : |AB| = √(9+16) = √25 = 5."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Coordonnées", difficulte:1, type:"qcm",
+     enonce:"A(2;1), B(5;4). Coordonnées de AB :",
+     options:["(3;3)","(7;5)","(3;4)","(−3;−3)"], correct:0, explication:"(5−2;4−1) = (3;3)."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"A(0;0), B(3;4). Norme de AB = ___", answer:"5",
+     hint:"√(3²+4²)", explication:"√(9+16) = √25 = 5."},
+    {id:"ex3", titre:"QCM — Addition de vecteurs", difficulte:2, type:"qcm",
+     enonce:"u=(2;3) et v=(−1;4). u+v = ?",
+     options:["(1;7)","(3;−1)","(2;12)","(1;−1)"], correct:0,
+     explication:"(2+(−1);3+4) = (1;7)."},
+    {id:"ex4", titre:"QCM — Colinéarité", difficulte:2, type:"qcm",
+     enonce:"u=(2;4) et v=(1;2) sont-ils colinéaires ?",
+     options:["Oui","Non","On ne peut pas savoir","Seulement si l'origine est la même"], correct:0,
+     explication:"u = 2v (2=2×1, 4=2×2). Ils sont colinéaires."},
+    {id:"ex5", titre:"QCM — Milieu", difficulte:3, type:"qcm",
+     enonce:"Milieu de [AB] avec A(1;3) et B(5;7) :",
+     options:["(3;5)","(4;4)","(6;10)","(2;4)"], correct:0,
+     explication:"M = ((1+5)/2 ; (3+7)/2) = (3;5)."}
+  ],
+  fiche:{titre:"Fiche — Vecteurs", sections:[
+    {titre:"Définition", items:["AB = (x_B−x_A ; y_B−y_A)","Norme : √(x²+y²)","Vecteurs égaux : mêmes coordonnées"]},
+    {titre:"Opérations", items:["u+v : additionner les coordonnées","λu : multiplier chaque coordonnée par λ","Colinéaires si u = λv"]}
+  ]}
+},
+
+{id:"2nde-geometrie-analytique", titre:"Géométrie analytique", niveau:"2nde", chapitre:"Géométrie",
+  description:"Équation de droite, distance, milieu, position relative de droites.", icone:"⊕", couleur:"#c0392b",
+  lecons:[
+    { id:"l1", titre:"Équation de droite", contenu:[
+      {type:"intro", texte:"Dans un repère, toute droite non verticale a une équation de la forme y = ax + b, où a est la pente et b l'ordonnée à l'origine."},
+      {type:"regle", titre:"Formes d'équation de droite", texte:"Représentations :", items:["Forme réduite : y = ax + b","Forme générale : αx + βy + γ = 0","Droite verticale : x = k","Droite horizontale : y = k"]},
+      {type:"exemple", titre:"Droite passant par A(1;3) et B(3;7)", etapes:[
+        {texte:"Pente : a = (7−3)/(3−1) = 4/2 = 2", calcul:"y = 2x + b\nOn substitue A : 3 = 2×1 + b → b = 1"},
+        {texte:"Équation : y = 2x + 1."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Lire une équation", difficulte:1, type:"qcm",
+     enonce:"y = 3x − 2. Pente et ordonnée à l'origine :",
+     options:["a=3, b=−2","a=−2, b=3","a=3, b=2","a=2, b=3"], correct:0,
+     explication:"Forme y=ax+b : a=3, b=−2."},
+    {id:"ex2", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"Droite de pente 4 passant par (0;−3). Valeur de y pour x=2 : y = ___",
+     answer:"5", hint:"y = 4x − 3", explication:"y = 4×2−3 = 5."},
+    {id:"ex3", titre:"QCM — Parallèles", difficulte:2, type:"qcm",
+     enonce:"Droites parallèles à y=2x+1 :",
+     options:["y=2x+5","y=x+2","y=−2x+1","y=3x+1"], correct:0,
+     explication:"Mêmes pentes (a=2) → parallèles."},
+    {id:"ex4", titre:"QCM — Perpendiculaires", difficulte:2, type:"qcm",
+     enonce:"Droite perpendiculaire à y=3x−1 :",
+     options:["y=−x/3+2","y=3x+2","y=x/3−1","y=−3x"], correct:0,
+     explication:"Pentes perpendiculaires : a₁×a₂=−1. 3×(−1/3)=−1. ✓"},
+    {id:"ex5", titre:"QCM — Point sur droite", difficulte:3, type:"qcm",
+     enonce:"Le point (2;7) appartient-il à y=4x−1 ?",
+     options:["Oui","Non","On ne peut pas savoir","Seulement pour x≥0"], correct:0,
+     explication:"4×2−1 = 7 = y(2). Oui."}
+  ],
+  fiche:{titre:"Fiche — Géométrie analytique", sections:[
+    {titre:"Droites", items:["y=ax+b : a=pente, b=ordonnée origine","Parallèles : même pente a","Perpendiculaires : a₁×a₂=−1","Intersection : résoudre le système"]},
+    {titre:"Points", items:["Milieu : ((x_A+x_B)/2 ; (y_A+y_B)/2)","Distance : √((Δx)²+(Δy)²)"]}
+  ]}
+},
+
+// ═══ PREMIÈRE ═══
+{id:"1ere-derivees", titre:"Dérivées et applications", niveau:"1ere", chapitre:"Analyse",
+  description:"Calculer des dérivées, étudier les variations et les extrema d'une fonction.", icone:"f'", couleur:"#1a5c8a",
+  lecons:[
+    { id:"l1", titre:"Règles de dérivation", contenu:[
+      {type:"intro", texte:"La dérivée f'(x) d'une fonction f donne le taux de variation instantané et la pente de la tangente au graphe."},
+      {type:"regle", titre:"Règles fondamentales", texte:"Fonctions usuelles :", items:["(c)' = 0","(xⁿ)' = nxⁿ⁻¹","(√x)' = 1/(2√x)","(eˣ)' = eˣ","(ln x)' = 1/x","(u+v)' = u'+v'","(uv)' = u'v + uv'","(u/v)' = (u'v − uv')/v²"]},
+      {type:"exemple", titre:"Dériver f(x) = x³ − 4x + 2", etapes:[
+        {texte:"On applique les règles terme par terme :", calcul:"f'(x) = 3x² − 4 + 0\nf'(x) = 3x² − 4"}
+      ]}
+    ]},
+    { id:"l2", titre:"Étude des variations", contenu:[
+      {type:"intro", texte:"Le signe de f'(x) donne les variations de f : si f'(x) > 0 alors f est croissante, si f'(x) < 0 alors f est décroissante."},
+      {type:"regle", titre:"Lien f' et variations", texte:"Sur un intervalle :", items:["f'(x) > 0 → f croissante","f'(x) < 0 → f décroissante","f'(x) = 0 et changement de signe → extremum local","f''(x) > 0 → minimum ; f''(x) < 0 → maximum"]},
+      {type:"exemple", titre:"Étudier f(x) = x² − 4x + 1", etapes:[
+        {texte:"f'(x) = 2x − 4. Racine : x = 2.", calcul:"f'(x) < 0 pour x < 2 → f décroissante\nf'(x) > 0 pour x > 2 → f croissante"},
+        {texte:"Minimum en x=2 : f(2) = 4−8+1 = −3."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Dériver", difficulte:1, type:"qcm",
+     enonce:"f(x) = 3x² + 2x − 5. f'(x) = ?",
+     options:["6x+2","3x+2","6x−5","3x²+2"], correct:0, explication:"(3x²)' = 6x, (2x)' = 2, (−5)' = 0. Donc f'(x) = 6x+2."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"g(x) = x⁴. g'(x) = ___x³", answer:"4", hint:"(xⁿ)' = nxⁿ⁻¹", explication:"(x⁴)' = 4x³."},
+    {id:"ex3", titre:"QCM — Tangente", difficulte:2, type:"qcm",
+     enonce:"f(x) = x²+1. Pente de la tangente en x=3 :",
+     options:["6","7","9","3"], correct:0, explication:"f'(x) = 2x. f'(3) = 6."},
+    {id:"ex4", titre:"QCM — Extremum", difficulte:2, type:"qcm",
+     enonce:"f(x)=−x²+4x. Extremum en :",
+     options:["x=2 (max)","x=2 (min)","x=4 (max)","x=0 (min)"], correct:0,
+     explication:"f'(x)=−2x+4=0 → x=2. f''(x)=−2<0 → maximum."},
+    {id:"ex5", titre:"QCM — Règle produit", difficulte:3, type:"qcm",
+     enonce:"h(x) = (2x+1)(x²−3). h'(x) = ?",
+     options:["2(x²−3)+(2x+1)×2x","2(x²+3)","2x²+x−3","4x+2"], correct:0,
+     explication:"h'=(2x+1)'(x²−3)+(2x+1)(x²−3)' = 2(x²−3)+(2x+1)×2x."}
+  ],
+  fiche:{titre:"Fiche — Dérivées", sections:[
+    {titre:"Règles usuelles", items:["(xⁿ)' = nxⁿ⁻¹","(u+v)' = u'+v'","(uv)' = u'v+uv'","(u/v)' = (u'v−uv')/v²"]},
+    {titre:"Variations", items:["f'>0 → croissante","f'<0 → décroissante","f'=0 : potentiel extremum","Tableau de variations : signe de f'"]}
+  ]}
+},
+
+{id:"1ere-suites-geometriques", titre:"Suites géométriques", niveau:"1ere", chapitre:"Suites",
+  description:"Définir, calculer et appliquer les suites géométriques. Sommes de termes.", icone:"qⁿ", couleur:"#1a5c8a",
+  lecons:[
+    { id:"l1", titre:"Définition et terme général", contenu:[
+      {type:"intro", texte:"Une suite géométrique est une suite où chaque terme s'obtient en multipliant le précédent par une valeur fixe : la raison q."},
+      {type:"regle", titre:"Propriétés", texte:"Pour une suite (uₙ) de raison q :", items:["uₙ₊₁ = uₙ × q","Terme général : uₙ = u₀ × qⁿ","Si q > 1 : croissante et tend vers +∞","Si 0 < q < 1 : décroissante et tend vers 0","Somme : u₀(1−qⁿ⁺¹)/(1−q) pour q ≠ 1"]},
+      {type:"exemple", titre:"Suite : 2, 6, 18, 54, …", etapes:[
+        {texte:"Raison : q = 6/2 = 3. Premier terme : u₀ = 2.", calcul:"uₙ = 2 × 3ⁿ\nu₅ = 2 × 3⁵ = 2 × 243 = 486"},
+        {texte:"Le 6ème terme (u₅) vaut 486."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Raison", difficulte:1, type:"qcm",
+     enonce:"Suite : 5, 10, 20, 40. Raison q =",
+     options:["2","5","10","1/2"], correct:0, explication:"q = 10/5 = 2."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"u₀=3, q=2. u₄ = ___", answer:"48", hint:"uₙ = u₀×qⁿ", explication:"u₄ = 3×2⁴ = 3×16 = 48."},
+    {id:"ex3", titre:"QCM — Comportement", difficulte:2, type:"qcm",
+     enonce:"Suite géométrique de raison q=0,5. Elle est :",
+     options:["Décroissante, tend vers 0","Croissante","Constante","Oscillante"], correct:0,
+     explication:"0 < q < 1 → décroissante, limite = 0."},
+    {id:"ex4", titre:"QCM — Somme", difficulte:3, type:"qcm",
+     enonce:"Somme 1+2+4+…+2⁹ =",
+     options:["1023","512","1024","2047"], correct:0,
+     explication:"S = 1×(1−2¹⁰)/(1−2) = (1−1024)/(−1) = 1023."},
+    {id:"ex5", titre:"QCM — Application", difficulte:3, type:"qcm",
+     enonce:"Placement 1000€ à 3%/an. Valeur après 10 ans ≈",
+     options:["1344€","1300€","1030€","2000€"], correct:0,
+     explication:"u₁₀ = 1000 × 1,03¹⁰ ≈ 1000 × 1,344 ≈ 1344€."}
+  ],
+  fiche:{titre:"Fiche — Suites géométriques", sections:[
+    {titre:"Formules", items:["Terme général : uₙ = u₀ × qⁿ","Somme : u₀(1−qⁿ)/(1−q)","Relation : uₙ₊₁ = q × uₙ"]},
+    {titre:"Comportement", items:["q>1 → diverge vers +∞","0<q<1 → converge vers 0","q<0 → termes alternent en signe"]}
+  ]}
+},
+
+{id:"1ere-probabilites-conditionnelles", titre:"Probabilités conditionnelles", niveau:"1ere", chapitre:"Probabilités",
+  description:"Probabilité conditionnelle, indépendance, arbres, formule des probabilités totales.", icone:"P(A|B)", couleur:"#1a5c8a",
+  lecons:[
+    { id:"l1", titre:"Probabilité conditionnelle", contenu:[
+      {type:"intro", texte:"La probabilité conditionnelle P(A|B) est la probabilité que A se réalise sachant que B est déjà réalisé."},
+      {type:"regle", titre:"Formule et propriétés", texte:"Définitions :", items:["P(A|B) = P(A∩B) / P(B), avec P(B) > 0","A et B indépendants si P(A|B) = P(A)","Formule multiplicative : P(A∩B) = P(A|B) × P(B)","Formule des probas totales : P(A) = P(A|B)×P(B) + P(A|B̄)×P(B̄)"]},
+      {type:"exemple", titre:"Urne : 3R, 2B. On tire 2 boules sans remise.", etapes:[
+        {texte:"P(1ère rouge) = 3/5", calcul:"P(2ème rouge | 1ère rouge) = 2/4 = 1/2"},
+        {texte:"P(2 rouges) = 3/5 × 1/2 = 3/10."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Définition", difficulte:1, type:"qcm",
+     enonce:"P(A∩B)=0,12 et P(B)=0,3. P(A|B) = ?",
+     options:["0,4","0,4","0,036","0,12"], correct:0, explication:"P(A|B) = 0,12/0,3 = 0,4."},
+    {id:"ex2", titre:"QCM — Indépendance", difficulte:2, type:"qcm",
+     enonce:"P(A)=0,5, P(B)=0,4, P(A∩B)=0,2. A et B sont-ils indépendants ?",
+     options:["Oui","Non","On ne peut pas savoir","Seulement si A⊂B"], correct:0,
+     explication:"P(A)×P(B)=0,5×0,4=0,2=P(A∩B). Oui, indépendants."},
+    {id:"ex3", titre:"QCM — Arbre", difficulte:2, type:"qcm",
+     enonce:"Sac : 4B, 1R. Tirage avec remise. P(2ème rouge) = ?",
+     options:["1/5","1/25","4/25","2/5"], correct:0,
+     explication:"Avec remise, P(rouge)=1/5 pour chaque tirage. P(2ème R)=1/5."},
+    {id:"ex4", titre:"QCM — Probas totales", difficulte:3, type:"qcm",
+     enonce:"P(M|A)=0,9, P(M|Ā)=0,2, P(A)=0,6. P(M) = ?",
+     options:["0,62","0,54","0,8","0,44"], correct:0,
+     explication:"P(M) = 0,9×0,6 + 0,2×0,4 = 0,54 + 0,08 = 0,62."},
+    {id:"ex5", titre:"QCM — Bayes", difficulte:3, type:"qcm",
+     enonce:"P(A)=0,6, P(M|A)=0,9, P(M)=0,62. P(A|M) = ?",
+     options:["≈ 0,87","0,54","0,9","0,6"], correct:0,
+     explication:"P(A|M) = P(M|A)×P(A)/P(M) = 0,9×0,6/0,62 ≈ 0,87."}
+  ],
+  fiche:{titre:"Fiche — Probabilités conditionnelles", sections:[
+    {titre:"Formules", items:["P(A|B) = P(A∩B)/P(B)","P(A∩B) = P(A|B)×P(B)","P(A) = P(A|B)P(B)+P(A|B̄)P(B̄)","Bayes : P(B|A) = P(A|B)P(B)/P(A)"]},
+    {titre:"Indépendance", items:["P(A|B) = P(A)","Équivalent à P(A∩B) = P(A)×P(B)","Si A et B incompatibles : P(A∩B)=0"]}
+  ]}
+},
+
+{id:"1ere-trigonometrie-cercle", titre:"Trigonométrie — cercle trigonométrique", niveau:"1ere", chapitre:"Analyse",
+  description:"Radian, cercle trigonométrique, cos, sin, tan : valeurs et formules.", icone:"cos", couleur:"#1a5c8a",
+  lecons:[
+    { id:"l1", titre:"Le cercle trigonométrique", contenu:[
+      {type:"intro", texte:"Le cercle trigonométrique est le cercle de centre O et de rayon 1. Tout angle est associé à un point M de ce cercle, dont les coordonnées sont (cos θ, sin θ)."},
+      {type:"regle", titre:"Valeurs remarquables", texte:"À connaître par cœur :", items:["cos(0)=1, sin(0)=0","cos(π/6)=√3/2, sin(π/6)=1/2","cos(π/4)=√2/2, sin(π/4)=√2/2","cos(π/3)=1/2, sin(π/3)=√3/2","cos(π/2)=0, sin(π/2)=1","cos(π)=−1, sin(π)=0"]},
+      {type:"exemple", titre:"Calculer cos(2π/3)", etapes:[
+        {texte:"2π/3 = π − π/3. On utilise la formule de supplémentaire :", calcul:"cos(π − x) = −cos(x)\ncos(2π/3) = −cos(π/3) = −1/2"}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Valeur remarquable", difficulte:1, type:"qcm",
+     enonce:"sin(π/4) = ?",
+     options:["√2/2","1/2","√3/2","1"], correct:0, explication:"sin(π/4) = sin(45°) = √2/2 ≈ 0,707."},
+    {id:"ex2", titre:"QCM", difficulte:1, type:"qcm",
+     enonce:"cos(π) = ?",
+     options:["−1","0","1","−√2/2"], correct:0, explication:"Le point à angle π est (−1;0), donc cos(π)=−1."},
+    {id:"ex3", titre:"QCM — Formule", difficulte:2, type:"qcm",
+     enonce:"sin(−x) = ?",
+     options:["−sin(x)","sin(x)","cos(x)","−cos(x)"], correct:0, explication:"sin est impaire : sin(−x) = −sin(x)."},
+    {id:"ex4", titre:"QCM — Identité", difficulte:2, type:"qcm",
+     enonce:"cos²(x) + sin²(x) = ?",
+     options:["1","0","2","cos(2x)"], correct:0, explication:"C'est l'identité fondamentale de la trigonométrie."},
+    {id:"ex5", titre:"Calcul", difficulte:3, type:"fill",
+     enonce:"cos(5π/6) = −√3 / ___ (donner le dénominateur)",
+     answer:"2", hint:"5π/6 = π − π/6", explication:"cos(π−π/6) = −cos(π/6) = −√3/2."}
+  ],
+  fiche:{titre:"Fiche — Cercle trigonométrique", sections:[
+    {titre:"Valeurs", items:["0° : cos=1, sin=0","30°(π/6): cos=√3/2, sin=1/2","45°(π/4): cos=sin=√2/2","60°(π/3): cos=1/2, sin=√3/2","90°(π/2): cos=0, sin=1"]},
+    {titre:"Formules", items:["cos²+sin²=1","cos(−x)=cos(x) (paire)","sin(−x)=−sin(x) (impaire)","cos(π−x)=−cos(x), sin(π−x)=sin(x)"]}
+  ]}
+},
+
+{id:"1ere-geometrie-espace", titre:"Géométrie dans l'espace", niveau:"1ere", chapitre:"Géométrie",
+  description:"Plans, droites, parallélisme et perpendicularité dans l'espace. Représentations.", icone:"⬡", couleur:"#1a5c8a",
+  lecons:[
+    { id:"l1", titre:"Positions relatives dans l'espace", contenu:[
+      {type:"intro", texte:"Dans l'espace, les droites et les plans peuvent avoir différentes positions relatives. Contrairement au plan, deux droites peuvent être non coplanaires."},
+      {type:"regle", titre:"Positions de deux droites", texte:"Deux droites dans l'espace peuvent être :", items:["Sécantes : elles se coupent en un point","Parallèles : sans point commun, dans le même plan","Coïncidentes : mêmes droites","Gauches (non coplanaires) : sans point commun et pas dans le même plan"]},
+      {type:"exemple", titre:"Cube ABCDEFGH — arêtes gauches", etapes:[
+        {texte:"AB et DH sont des arêtes du cube.", calcul:"Elles n'ont pas de point commun\nElles ne sont pas parallèles\n→ Elles sont gauches"},
+        {texte:"En revanche, AB // EF (parallèles, non coplanaires avec le même plan)."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Positions", difficulte:1, type:"qcm",
+     enonce:"Deux droites non coplanaires sans point commun sont :",
+     options:["Gauches","Sécantes","Parallèles","Coïncidentes"], correct:0,
+     explication:"Des droites gauches sont non coplanaires et sans point commun."},
+    {id:"ex2", titre:"QCM", difficulte:1, type:"qcm",
+     enonce:"Dans un cube, les arêtes opposées d'une face sont :",
+     options:["Parallèles","Sécantes","Gauches","Confondues"], correct:0,
+     explication:"Les arêtes opposées d'une face sont parallèles."},
+    {id:"ex3", titre:"QCM — Plan", difficulte:2, type:"qcm",
+     enonce:"Une droite est parallèle à un plan si :",
+     options:["Elle n'a aucun point commun avec le plan","Elle est dans le plan","Elle le coupe en un point","Elle est perpendiculaire au plan"], correct:0,
+     explication:"Droite parallèle au plan = aucun point commun."},
+    {id:"ex4", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"Vrai ou faux : si deux droites sont perpendiculaires à un même plan, elles sont parallèles.",
+     options:["Vrai","Faux"], correct:0, explication:"Oui, deux droites perpendiculaires au même plan sont parallèles entre elles."},
+    {id:"ex5", titre:"QCM", difficulte:3, type:"qcm",
+     enonce:"Dans le cube ABCDEFGH, les diagonales du cube sont :",
+     options:["AG, BH, CE, DF","AB, CD, EF, GH","AC, BD","AE, BF"], correct:0,
+     explication:"Les quatre grandes diagonales d'un cube relient sommets opposés : AG, BH, CE, DF."}
+  ],
+  fiche:{titre:"Fiche — Géométrie de l'espace", sections:[
+    {titre:"Positions de droites", items:["Sécantes : un point commun","Parallèles : coplanaires, sans point commun","Gauches : non coplanaires","Coïncidentes : confondues"]},
+    {titre:"Perpendicularité", items:["Droite ⊥ plan : perpendiculaire à toute droite du plan","Plans parallèles : coupés par un plan → droites parallèles"]}
+  ]}
+},
+
+// ═══ TERMINALE ═══
+{id:"term-integrales", titre:"Intégrales — calcul et applications", niveau:"term", chapitre:"Analyse",
+  description:"Calcul d'intégrales définies, primitives, intégration par parties, applications géométriques.", icone:"∫", couleur:"#2d6a4f",
+  lecons:[
+    { id:"l1", titre:"Primitives et intégrales", contenu:[
+      {type:"intro", texte:"Une primitive de f est une fonction F telle que F' = f. L'intégrale définie ∫(a→b) f(x)dx = F(b) − F(a) représente l'aire algébrique sous la courbe."},
+      {type:"regle", titre:"Primitives usuelles", texte:"À connaître :", items:["∫ xⁿ dx = xⁿ⁺¹/(n+1) + C","∫ eˣ dx = eˣ + C","∫ 1/x dx = ln|x| + C","∫ cos x dx = sin x + C","∫ sin x dx = −cos x + C","∫ 1/√x dx = 2√x + C"]},
+      {type:"exemple", titre:"Calculer ∫(0→2) (3x² + 1) dx", etapes:[
+        {texte:"Primitives : F(x) = x³ + x", calcul:"∫(0→2) = F(2) − F(0)\n= (8 + 2) − (0 + 0)\n= 10"},
+        {texte:"L'intégrale vaut 10."}
+      ]}
+    ]},
+    { id:"l2", titre:"Intégration par parties", contenu:[
+      {type:"intro", texte:"La formule d'intégration par parties permet d'intégrer des produits de fonctions."},
+      {type:"regle", titre:"Formule", texte:"Pour u et v dérivables :", items:["∫ u'v dx = [uv] − ∫ uv' dx","Choisir u' facile à intégrer et v' simple à dériver","Exemple : ∫ x eˣ dx avec u'=eˣ et v=x"]},
+      {type:"exemple", titre:"Calculer ∫(0→1) x eˣ dx", etapes:[
+        {texte:"On choisit u'=eˣ (u=eˣ) et v=x (v'=1)", calcul:"∫ x eˣ dx = [x eˣ] − ∫ eˣ dx\n= x eˣ − eˣ + C = eˣ(x−1) + C"},
+        {texte:"Évaluation : [eˣ(x−1)](0→1) = e⁰ × 0 − e⁰ × (−1) = 0 + 1 = 1."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Primitive", difficulte:1, type:"qcm",
+     enonce:"Une primitive de f(x)=4x³ est :",
+     options:["x⁴","x⁴+C","12x²","4x⁴"], correct:1, explication:"∫4x³dx = 4×x⁴/4 = x⁴+C."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"∫(0→1) 2x dx = ___", answer:"1", hint:"Primitive : x²", explication:"[x²](0→1) = 1−0 = 1."},
+    {id:"ex3", titre:"QCM", difficulte:2, type:"qcm",
+     enonce:"∫(1→e) (1/x) dx = ?",
+     options:["1","ln(e)=1","e−1","0"], correct:0, explication:"[ln x](1→e) = ln(e)−ln(1) = 1−0 = 1."},
+    {id:"ex4", titre:"QCM — Aire", difficulte:2, type:"qcm",
+     enonce:"Aire entre f(x)=x² et l'axe des x sur [0;3] :",
+     options:["9","27","3","27/3=9"], correct:0, explication:"∫(0→3) x² dx = [x³/3](0→3) = 27/3 = 9."},
+    {id:"ex5", titre:"QCM — IPP", difficulte:3, type:"qcm",
+     enonce:"∫ ln(x) dx (primitive) =",
+     options:["x ln(x)−x+C","ln(x)/x","x/ln(x)","1/x"], correct:0,
+     explication:"IPP avec u'=1 et v=ln(x) : [x ln(x)] − ∫x×(1/x)dx = x ln(x) − x + C."}
+  ],
+  fiche:{titre:"Fiche — Intégrales", sections:[
+    {titre:"Primitives", items:["xⁿ → xⁿ⁺¹/(n+1)","eˣ → eˣ","1/x → ln|x|","cos x → sin x","sin x → −cos x"]},
+    {titre:"Propriétés", items:["∫(a→b) = F(b)−F(a)","∫(a→b) = −∫(b→a)","Linéarité : ∫(λf+g) = λ∫f + ∫g","Aire = |∫| si f change de signe"]}
+  ]}
+},
+
+{id:"term-logarithmes", titre:"Fonctions logarithme et exponentielle", niveau:"term", chapitre:"Analyse",
+  description:"Propriétés de ln, exp, équations et inéquations, croissances comparées.", icone:"eˣ", couleur:"#2d6a4f",
+  lecons:[
+    { id:"l1", titre:"La fonction exponentielle", contenu:[
+      {type:"intro", texte:"La fonction exponentielle f(x) = eˣ est la seule fonction dérivable égale à sa propre dérivée et valant 1 en 0."},
+      {type:"regle", titre:"Propriétés de exp", texte:"Pour tous réels a, b :", items:["eᵃ × eᵇ = eᵃ⁺ᵇ","eᵃ/eᵇ = eᵃ⁻ᵇ","(eᵃ)ᵇ = eᵃᵇ","e⁰ = 1, e¹ = e ≈ 2,718","(eˣ)' = eˣ", "lim(x→+∞) eˣ/xⁿ = +∞ (croissance comparative)"]},
+      {type:"exemple", titre:"Résoudre eˣ = 5", etapes:[
+        {texte:"On applique ln des deux membres :", calcul:"ln(eˣ) = ln(5)\nx = ln(5) ≈ 1,609"}
+      ]}
+    ]},
+    { id:"l2", titre:"La fonction logarithme naturel", contenu:[
+      {type:"intro", texte:"La fonction ln est la réciproque de exp. Elle est définie sur ]0;+∞[ et transforme les produits en sommes."},
+      {type:"regle", titre:"Propriétés de ln", texte:"Pour a, b > 0 :", items:["ln(a×b) = ln(a)+ln(b)","ln(a/b) = ln(a)−ln(b)","ln(aⁿ) = n×ln(a)","ln(1) = 0, ln(e) = 1","(ln x)' = 1/x","lim(x→0⁺) x×ln(x) = 0"]},
+      {type:"exemple", titre:"Résoudre ln(x) + ln(x+2) = ln(8)", etapes:[
+        {texte:"On utilise ln(a)+ln(b) = ln(ab) :", calcul:"ln(x(x+2)) = ln(8)\nx(x+2) = 8\nx² + 2x − 8 = 0\n(x+4)(x−2) = 0"},
+        {texte:"x = −4 (refusé, ln non défini) ou x = 2. Solution : x = 2."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Simplifier", difficulte:1, type:"qcm",
+     enonce:"e³ × e² = ?",
+     options:["e⁵","e⁶","e","2e³"], correct:0, explication:"eᵃ×eᵇ = eᵃ⁺ᵇ = e⁵."},
+    {id:"ex2", titre:"QCM — ln", difficulte:1, type:"qcm",
+     enonce:"ln(e⁴) = ?",
+     options:["4","e⁴","4e","1/4"], correct:0, explication:"ln(eˣ) = x, donc ln(e⁴) = 4."},
+    {id:"ex3", titre:"QCM — Équation", difficulte:2, type:"qcm",
+     enonce:"ln(2x−1) = 0 → x = ?",
+     options:["1","1/2","e","0"], correct:0, explication:"ln(2x−1)=0 → 2x−1=1 → x=1."},
+    {id:"ex4", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"ln(12) = ln(4) + ln(___)", answer:"3", hint:"ln(ab) = ln(a)+ln(b)", explication:"ln(4)+ln(3) = ln(12)."},
+    {id:"ex5", titre:"QCM — Croissance", difficulte:3, type:"qcm",
+     enonce:"lim(x→+∞) x³/eˣ = ?",
+     options:["0","1","+∞","−∞"], correct:0,
+     explication:"Croissance de eˣ domine tout polynôme → x³/eˣ → 0."}
+  ],
+  fiche:{titre:"Fiche — ln et exp", sections:[
+    {titre:"Propriétés exp", items:["eᵃ⁺ᵇ = eᵃ×eᵇ","(eˣ)' = eˣ","e⁰=1","Croissance : +∞ vers +∞"]},
+    {titre:"Propriétés ln", items:["ln(ab) = ln(a)+ln(b)","(ln x)' = 1/x","ln(1)=0, ln(e)=1","Défini sur ]0;+∞["]}
+  ]}
+},
+
+{id:"term-limites-continuite", titre:"Limites et continuité", niveau:"term", chapitre:"Analyse",
+  description:"Calcul de limites, théorèmes, continuité, valeur intermédiaire.", icone:"lim", couleur:"#2d6a4f",
+  lecons:[
+    { id:"l1", titre:"Calcul de limites", contenu:[
+      {type:"intro", texte:"La limite d'une fonction en un point décrit son comportement quand x s'approche de ce point. On dit que lim(x→a) f(x) = L si f(x) se rapproche de L quand x tend vers a."},
+      {type:"regle", titre:"Formes indéterminées", texte:"À lever par factorisation ou L'Hôpital :", items:["∞ − ∞ : factoriser par le terme dominant","0/0 : simplifier par (x−a)","∞/∞ : diviser par la puissance maximale","0 × ∞ : réécrire comme quotient"]},
+      {type:"exemple", titre:"Calculer lim(x→2) (x²−4)/(x−2)", etapes:[
+        {texte:"Forme 0/0. On factorise :", calcul:"(x²−4)/(x−2) = (x+2)(x−2)/(x−2)\n= x+2 (pour x ≠ 2)"},
+        {texte:"lim(x→2) (x+2) = 4."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Limite simple", difficulte:1, type:"qcm",
+     enonce:"lim(x→+∞) (3x²+1)/(x²) = ?",
+     options:["3","0","1","∞"], correct:0, explication:"Diviser par x² : (3+1/x²)/1 → 3."},
+    {id:"ex2", titre:"QCM — Forme 0/0", difficulte:2, type:"qcm",
+     enonce:"lim(x→1) (x²−1)/(x−1) = ?",
+     options:["2","0","1","∞"], correct:0, explication:"(x−1)(x+1)/(x−1) = x+1 → 2."},
+    {id:"ex3", titre:"QCM — Continuité", difficulte:2, type:"qcm",
+     enonce:"f(x) = 1/x est continue sur :",
+     options:["ℝ\\{0}","ℝ","[0;+∞[","ℝ⁺"], correct:0, explication:"1/x est définie et continue partout sauf en 0."},
+    {id:"ex4", titre:"QCM — Valeur intermédiaire", difficulte:2, type:"qcm",
+     enonce:"f continue sur [1;3], f(1)=−2, f(3)=4. L'équation f(x)=0 a :",
+     options:["Au moins une solution sur ]1;3[","Aucune solution","Exactement 1 solution","2 solutions"], correct:0,
+     explication:"TVI : 0 est entre −2 et 4, donc il existe au moins un c∈]1;3[ avec f(c)=0."},
+    {id:"ex5", titre:"QCM — Asymptote", difficulte:3, type:"qcm",
+     enonce:"f(x) = (2x+1)/(x−3). Asymptote horizontale ?",
+     options:["y=2","y=1","y=3","Pas d'asymptote horizontale"], correct:0,
+     explication:"lim(x→±∞) (2x+1)/(x−3) = 2x/x = 2. Asymptote y=2."}
+  ],
+  fiche:{titre:"Fiche — Limites", sections:[
+    {titre:"Règles", items:["Somme, produit, quotient de limites","Formes indét.: 0/0, ∞/∞, ∞−∞, 0×∞","Théorème des gendarmes","Règle de L'Hôpital"]},
+    {titre:"Continuité", items:["f continue en a si lim = f(a)","TVI : f continue sur [a;b], k entre f(a) et f(b) → ∃c","Toute dérivable est continue"]}
+  ]}
+},
+
+{id:"term-geometrie-vectorielle", titre:"Géométrie dans l'espace — vecteurs", niveau:"term", chapitre:"Géométrie",
+  description:"Produit scalaire, vecteur normal, équation de plan, droites et plans dans l'espace.", icone:"⃗n", couleur:"#2d6a4f",
+  lecons:[
+    { id:"l1", titre:"Produit scalaire dans l'espace", contenu:[
+      {type:"intro", texte:"Le produit scalaire permet de calculer des angles et de démontrer la perpendicularité dans l'espace."},
+      {type:"regle", titre:"Définitions et formules", texte:"Pour u(x₁;y₁;z₁) et v(x₂;y₂;z₂) :", items:["u·v = x₁x₂ + y₁y₂ + z₁z₂","u·v = |u|×|v|×cos(θ)","u⊥v si u·v = 0","Norme : |u|² = x²+y²+z²"]},
+      {type:"exemple", titre:"u=(1;2;−1) et v=(2;−1;0). u·v = ?", etapes:[
+        {texte:"On calcule le produit scalaire :", calcul:"u·v = 1×2 + 2×(−1) + (−1)×0\n= 2 − 2 + 0 = 0"},
+        {texte:"u·v = 0, donc u et v sont perpendiculaires."}
+      ]}
+    ]},
+    { id:"l2", titre:"Équation de plan", contenu:[
+      {type:"intro", texte:"Un plan de l'espace est défini par un point et un vecteur normal n. Son équation cartésienne est ax+by+cz+d=0."},
+      {type:"regle", titre:"Équation cartésienne", texte:"Plan de vecteur normal n=(a;b;c) :", items:["Équation : ax + by + cz + d = 0","d est obtenu en substituant un point du plan","Distance d'un point P(x₀;y₀;z₀) au plan : |ax₀+by₀+cz₀+d|/√(a²+b²+c²)"]},
+      {type:"exemple", titre:"Plan passant par A(1;2;3) de normale n=(2;−1;1)", etapes:[
+        {texte:"Équation : 2x − y + z + d = 0", calcul:"On substitue A : 2×1 − 2 + 3 + d = 0\n3 + d = 0 → d = −3"},
+        {texte:"Équation du plan : 2x − y + z − 3 = 0."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Produit scalaire", difficulte:1, type:"qcm",
+     enonce:"u=(2;1;0), v=(0;2;1). u·v = ?",
+     options:["2","3","0","5"], correct:0, explication:"2×0+1×2+0×1 = 0+2+0 = 2."},
+    {id:"ex2", titre:"QCM — Perpendicularité", difficulte:1, type:"qcm",
+     enonce:"u=(1;2;−2), v=(2;0;1). Sont-ils perpendiculaires ?",
+     options:["Oui","Non"], correct:0, explication:"u·v = 2+0−2 = 0. Oui."},
+    {id:"ex3", titre:"Calcul", difficulte:2, type:"fill",
+     enonce:"Plan 3x+y−z+d=0 passant par (1;0;2). d = ___",
+     answer:"-1", hint:"Substituer (1;0;2)", explication:"3×1+0×0−1×2+d=0 → 3−2+d=0 → d=−1."},
+    {id:"ex4", titre:"QCM — Droite dans l'espace", difficulte:2, type:"qcm",
+     enonce:"Droite de direction u=(1;2;3), passant par A(0;1;0). Paramétrique :",
+     options:["x=t; y=1+2t; z=3t","x=1;y=2;z=3","x=t;y=t;z=t","x=0;y=1;z=0"], correct:0,
+     explication:"(x;y;z) = (0;1;0) + t(1;2;3) = (t;1+2t;3t)."},
+    {id:"ex5", titre:"QCM — Angle", difficulte:3, type:"qcm",
+     enonce:"u=(1;0;0), v=(1;1;0). cos(θ) = ?",
+     options:["√2/2","1/2","1","√2"], correct:0,
+     explication:"|u|=1, |v|=√2, u·v=1. cos(θ)=1/(1×√2)=1/√2=√2/2. θ=45°."}
+  ],
+  fiche:{titre:"Fiche — Géométrie vectorielle 3D", sections:[
+    {titre:"Produit scalaire", items:["u·v = x₁x₂+y₁y₂+z₁z₂","u·v = |u||v|cos(θ)","u⊥v ↔ u·v=0"]},
+    {titre:"Plans et droites", items:["Plan : ax+by+cz+d=0 (normale (a;b;c))","Droite : P₀ + t·u (paramétrique)","Distance point-plan : |ax₀+by₀+cz₀+d|/√(a²+b²+c²)"]}
+  ]}
+},
+
+{id:"term-denombrement", titre:"Dénombrement et combinatoire", niveau:"term", chapitre:"Probabilités",
+  description:"Arrangements, permutations, combinaisons. Loi binomiale et grandes lois de probabilité.", icone:"Cₙᵏ", couleur:"#2d6a4f",
+  lecons:[
+    { id:"l1", titre:"Arrangements et combinaisons", contenu:[
+      {type:"intro", texte:"Le dénombrement permet de compter des configurations sans les lister une à une. Selon si l'ordre compte ou non, on utilise arrangements ou combinaisons."},
+      {type:"regle", titre:"Formules de dénombrement", texte:"Pour n éléments, on choisit k :", items:["Arrangements (ordre compte) : Aₙᵏ = n!/(n−k)!","Combinaisons (ordre ne compte pas) : Cₙᵏ = n!/(k!(n−k)!)","Permutations de n : n!","n! = n×(n−1)×…×2×1"]},
+      {type:"exemple", titre:"Choisir un comité de 3 parmi 8 personnes", etapes:[
+        {texte:"L'ordre ne compte pas → combinaisons :", calcul:"C₈³ = 8!/(3!×5!) = (8×7×6)/(3×2×1) = 336/6 = 56"},
+        {texte:"Il y a 56 comités possibles."}
+      ]}
+    ]},
+    { id:"l2", titre:"Loi binomiale", contenu:[
+      {type:"intro", texte:"La loi binomiale B(n,p) modélise le nombre de succès dans n épreuves indépendantes, chacune ayant une probabilité p de succès."},
+      {type:"regle", titre:"Loi binomiale B(n,p)", texte:"Si X suit B(n,p) :", items:["P(X=k) = Cₙᵏ × pᵏ × (1−p)ⁿ⁻ᵏ","Espérance : E(X) = np","Variance : V(X) = np(1−p)","Écart-type : σ = √(np(1−p))"]},
+      {type:"exemple", titre:"Lancer 10 fois un dé équilibré. P(obtenir exactement 3 fois un 6)", etapes:[
+        {texte:"X ~ B(10; 1/6). On cherche P(X=3) :", calcul:"P(X=3) = C₁₀³ × (1/6)³ × (5/6)⁷\n≈ 120 × 0,00463 × 0,279 ≈ 0,155"},
+        {texte:"Il y a environ 15,5% de chances d'obtenir exactement 3 six."}
+      ]}
+    ]}
+  ],
+  exercices:[
+    {id:"ex1", titre:"QCM — Combinaisons", difficulte:1, type:"qcm",
+     enonce:"C₅² = ?",
+     options:["10","20","5","25"], correct:0, explication:"C₅² = 5!/(2!3!) = (5×4)/2 = 10."},
+    {id:"ex2", titre:"Calcul", difficulte:1, type:"fill",
+     enonce:"4! = ___", answer:"24", hint:"4×3×2×1", explication:"4! = 4×3×2×1 = 24."},
+    {id:"ex3", titre:"QCM — Arrangements", difficulte:2, type:"qcm",
+     enonce:"Nombre d'arrangements de 2 éléments parmi 5 (A₅²) :",
+     options:["20","10","5","25"], correct:0, explication:"A₅² = 5!/(5−2)! = 5×4 = 20."},
+    {id:"ex4", titre:"QCM — Binomiale", difficulte:2, type:"qcm",
+     enonce:"X~B(4;0,5). P(X=2) = ?",
+     options:["3/8","1/4","1/2","1/8"], correct:0,
+     explication:"C₄²×(0,5)²×(0,5)² = 6×0,25×0,25 = 6/16 = 3/8."},
+    {id:"ex5", titre:"QCM — Espérance", difficulte:3, type:"qcm",
+     enonce:"X~B(20;0,3). E(X) = ?",
+     options:["6","3","0,3","14"], correct:0, explication:"E(X) = np = 20×0,3 = 6."}
+  ],
+  fiche:{titre:"Fiche — Combinatoire et loi binomiale", sections:[
+    {titre:"Formules", items:["n! = n×(n−1)×…×1","Cₙᵏ = n!/(k!(n−k)!)","Aₙᵏ = n!/(n−k)!","Cₙ⁰=Cₙⁿ=1"]},
+    {titre:"Loi binomiale B(n,p)", items:["P(X=k) = Cₙᵏ pᵏ (1−p)ⁿ⁻ᵏ","E(X)=np","V(X)=np(1−p)","σ=√(np(1−p))"]}
+  ]}
+}
+
+];
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let state = {
+  level: 'all',
+  filter: 'all',
+  search: '',
+  currentCourse: null,
+  currentLecon: 0,
+  progress: {},
+  exoState: {},
+  leconDone: {}
+};
+
+try { state.progress = JSON.parse(localStorage.getItem('mc_progress') || '{}'); } catch(e) {}
+try { state.leconDone = JSON.parse(localStorage.getItem('mc_leconDone') || '{}'); } catch(e) {}
+
+const LEVELS = ['6e','5e','4e','3e','2nde','1ere','term'];
+const LEVEL_LABELS = {'6e':'6ème','5e':'5ème','4e':'4ème','3e':'3ème','2nde':'Seconde','1ere':'Première','term':'Terminale'};
+const CHAPS_BY_LEVEL = {};
+LEVELS.forEach(l => {
+  const cs = COURSES.filter(c => c.niveau === l);
+  const chaps = [...new Set(cs.map(c=>c.chapitre))];
+  CHAPS_BY_LEVEL[l] = chaps;
+});
+
+// ══════════════════════════════════════════════════
+// RENDER CATALOGUE
+// ══════════════════════════════════════════════════
+function getFilteredCourses() {
+  let list = COURSES;
+  if (state.level !== 'all') list = list.filter(c => c.niveau === state.level);
+  if (state.filter !== 'all') list = list.filter(c => c.chapitre === state.filter);
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    list = list.filter(c => c.titre.toLowerCase().includes(q) || c.description.toLowerCase().includes(q) || c.chapitre.toLowerCase().includes(q));
+  }
+  return list;
+}
+
+function renderCatalogue() {
+  const courses = getFilteredCourses();
+  const grid = document.getElementById('courses-grid');
+  const fb = document.getElementById('filter-bar');
+
+  // Filter bar
+  const chaps = state.level === 'all'
+    ? [...new Set(COURSES.map(c=>c.chapitre))]
+    : (CHAPS_BY_LEVEL[state.level] || []);
+  
+  let fbHtml = `<div class="filter-chip ${state.filter==='all'?'active':''}" onclick="setFilter('all')">Tous les chapitres</div>`;
+  chaps.forEach(ch => {
+    fbHtml += `<div class="filter-chip ${state.filter===ch?'active':''}" onclick="setFilter('${ch}')">${ch}</div>`;
+  });
+  fb.innerHTML = fbHtml;
+
+  if (!courses.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>Aucun cours trouvé pour cette recherche.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = courses.map(c => {
+    const lvlClass = `lvl-${c.niveau}`;
+    const done = state.leconDone[c.id];
+    const doneCount = done ? Object.values(done).filter(Boolean).length : 0;
+    const totalLecons = c.lecons.length;
+    return `
+      <div class="course-card ${lvlClass}" onclick="openCourse('${c.id}')">
+        <div class="course-card-top">
+          <div class="course-card-icon" style="color:${c.couleur}">${c.icone}</div>
+          <h3>${c.titre}</h3>
+          <p>${c.description}</p>
+        </div>
+        <div class="course-card-meta">
+          <div class="course-card-tags">
+            <span class="tag tag-niveau">${LEVEL_LABELS[c.niveau]}</span>
+            <span class="tag tag-chapitre">${c.chapitre}</span>
+          </div>
+          <div style="font-size:11px;color:var(--text3)">${doneCount}/${totalLecons} leçons</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function setLevel(l) {
+  state.level = l;
+  state.filter = 'all';
+  document.querySelectorAll('.nav-level').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('nav-' + l);
+  if (el) el.classList.add('active');
+  renderCatalogue();
+}
+
+function setFilter(ch) {
+  state.filter = ch;
+  renderCatalogue();
+}
+
+function filterSearch(q) {
+  state.search = q;
+  renderCatalogue();
+}
+
+// ══════════════════════════════════════════════════
+// RENDER COURSE PAGE
+// ══════════════════════════════════════════════════
+function openCourse(id) {
+  const c = COURSES.find(x => x.id === id);
+  if (!c) return;
+  state.currentCourse = c;
+  state.currentLecon = 0;
+  state.exoState = {};
+  showPage('page-cours');
+  renderCourse();
+}
+
+function renderCourse() {
+  const c = state.currentCourse;
+  if (!c) return;
+  const lvlClass = `lvl-${c.niveau}`;
+
+  const done = state.leconDone[c.id] || {};
+  const doneCount = Object.values(done).filter(Boolean).length;
+  const progress = Math.round(doneCount / c.lecons.length * 100);
+
+  let html = `
+    <button class="back-btn" onclick="goBack()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Retour aux cours
+    </button>
+    <div class="cours-hero">
+      <div class="meta">
+        <span class="tag tag-niveau">${LEVEL_LABELS[c.niveau]}</span>
+        <span class="tag tag-chapitre">${c.chapitre}</span>
+      </div>
+      <h1>${c.titre}</h1>
+      <p class="desc">${c.description}</p>
+      <div class="progress-bar-wrap"><div class="progress-bar" style="width:${progress}%"></div></div>
+      <p style="font-size:12px;color:var(--text3);margin-top:6px">${doneCount} / ${c.lecons.length} leçons terminées</p>
     </div>
-  </footer>
+    <div class="lecons-nav">`;
+  
+  c.lecons.forEach((l, i) => {
+    const isDone = done[l.id];
+    html += `<button class="lecon-btn ${i===state.currentLecon?'active':''} ${isDone&&i!==state.currentLecon?'done':''}" onclick="switchLecon(${i})">${l.titre}</button>`;
+  });
+  html += `</div>`;
 
-  <script src="js/theme.js"></script>
-  <script src="js/loader.js"></script>
-  <script>
-    // Load and display courses
-    async function loadCours() {
-      const grid = document.getElementById('coursGrid');
-      const coursFiles = await getCoursList();
-      
-      if (coursFiles.length === 0) {
-        grid.innerHTML = '<p class="empty-state">Aucun cours disponible pour le moment.</p>';
-        return;
-      }
+  // Lecon content
+  const lecon = c.lecons[state.currentLecon];
+  html += renderLecon(lecon, c);
 
-      grid.innerHTML = '';
-      for (const cours of coursFiles) {
-        const card = document.createElement('a');
-        card.href = `cours.html?id=${cours.id}`;
-        card.className = 'cours-card';
-        card.innerHTML = `
-          <div class="cours-icon">${cours.icone || '📐'}</div>
-          <div class="cours-info">
-            <span class="cours-niveau">${cours.niveau} — ${cours.chapitre}</span>
-            <h3>${cours.titre}</h3>
-            <p>${cours.description}</p>
-          </div>
-          <div class="cours-meta">
-            <span>${cours.lecons?.length || 0} leçon${(cours.lecons?.length || 0) > 1 ? 's' : ''}</span>
-            <span>${cours.exercices?.length || 0} exercice${(cours.exercices?.length || 0) > 1 ? 's' : ''}</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        `;
-        grid.appendChild(card);
-      }
+  // Exercices
+  if (state.currentLecon === c.lecons.length - 1 || done[lecon.id]) {
+    html += renderExercices(c);
+    if (c.fiche) html += renderFiche(c.fiche);
+  }
+
+  document.getElementById('cours-content').innerHTML = html;
+}
+
+function renderLecon(lecon, c) {
+  let html = `<div id="lecon-content">`;
+  lecon.contenu.forEach(block => {
+    if (block.type === 'intro') {
+      html += `<div class="content-block"><div class="block-intro">${block.texte}</div></div>`;
+    } else if (block.type === 'regle') {
+      html += `<div class="content-block"><div class="block-regle">
+        <div class="block-regle-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <h4>${block.titre}</h4>
+        </div>
+        <div class="block-regle-body">
+          ${block.texte ? `<p>${block.texte}</p>` : ''}
+          ${block.items ? `<ul>${block.items.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+        </div>
+      </div></div>`;
+    } else if (block.type === 'exemple') {
+      html += `<div class="content-block"><div class="block-exemple">
+        <div class="block-exemple-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${c.couleur||'#b5830a'}" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+          <h4>${block.titre}</h4>
+        </div>
+        <div class="block-exemple-body">
+          ${block.etapes.map((et, idx) => {
+            let s = `<div class="etape"><p>${et.texte || ''}</p>`;
+            if (et.calcul) s += `<div class="calcul">${et.calcul}</div>`;
+            if (et.tableau) s += renderSignTable(et.tableau);
+            if (idx === block.etapes.length - 1 && et.texte && et.texte.includes('Conclusion')) {
+              s = `<div class="etape"><div class="conclusion">${et.texte}</div>`;
+            }
+            s += `</div>`;
+            return s;
+          }).join('')}
+        </div>
+      </div></div>`;
     }
+  });
 
-    loadCours();
-  </script>
+  const isDone = (state.leconDone[c.id] || {})[lecon.id];
+  if (!isDone) {
+    html += `<div style="text-align:center;margin:32px 0">
+      <button class="btn btn-primary" onclick="markLeconDone('${lecon.id}')">
+        ✓ J'ai compris cette leçon
+      </button>
+    </div>`;
+  } else {
+    html += `<div class="lecon-complete">
+      <div class="big">🎉</div>
+      <h3>Leçon maîtrisée !</h3>
+      <p>Tu peux passer aux exercices ou aller à la leçon suivante.</p>
+      <div class="actions">
+        ${state.currentLecon < c.lecons.length - 1 ? `<button class="btn btn-primary" onclick="switchLecon(${state.currentLecon+1})">Leçon suivante →</button>` : ''}
+        <button class="btn btn-secondary" onclick="scrollToExo()">Voir les exercices</button>
+      </div>
+    </div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function renderSignTable(tableau) {
+  let h = `<div class="sign-table-wrap"><table class="sign-table"><tr>`;
+  tableau.headers.forEach(hd => h += `<th>${hd}</th>`);
+  h += `</tr>`;
+  tableau.lignes.forEach(ligne => {
+    h += `<tr><td class="label">${ligne.label}</td>`;
+    ligne.valeurs.forEach(v => {
+      let cls = '';
+      if (v === '+') cls = 'plus';
+      else if (v === '−' || v === '-') cls = 'minus';
+      else if (v === '0') cls = 'zero';
+      else if (v === '||') cls = 'interdit';
+      h += `<td class="${cls}">${v}</td>`;
+    });
+    h += `</tr>`;
+  });
+  h += `</table></div>`;
+  return h;
+}
+
+function renderExercices(c) {
+  let html = `<div class="exercices-section" id="exo-section"><h2>Exercices</h2>`;
+  
+  // Score bar
+  const answered = Object.keys(state.exoState).length;
+  const correct = Object.values(state.exoState).filter(v=>v===true).length;
+  if (answered > 0) {
+    html += `<div class="score-bar">
+      <span>Score : <strong>${correct}/${answered}</strong></span>
+      <div class="score-mini">
+        ${c.exercices.map((_,i) => {
+          const k = c.id+'_'+i;
+          const v = state.exoState[k];
+          return `<div class="score-dot ${v===true?'correct':v===false?'wrong':''}"></div>`;
+        }).join('')}
+      </div>
+    </span>`;
+    html += `</div>`;
+  }
+
+  c.exercices.forEach((ex, idx) => {
+    const lvlClass = `lvl-${c.niveau}`;
+    const stars = '★'.repeat(ex.difficulte) + '☆'.repeat(3-ex.difficulte);
+    html += `<div class="exo-card ${lvlClass}" id="exo-${idx}">
+      <div class="exo-header">
+        <div class="exo-num">${idx+1}</div>
+        <div class="exo-info">
+          <h4>${ex.titre}</h4>
+          <div class="exo-stars">${stars.split('').map((s,i)=>`<span class="star" style="color:${i<ex.difficulte?'#b5830a':'#ccc'}">${s}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="exo-body">
+        <div class="enonce">${ex.enonce}</div>
+        ${renderExoInteractif(ex, idx, c)}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderExoInteractif(ex, idx, c) {
+  const key = c.id + '_' + idx;
+  
+  if (ex.type === 'qcm') {
+    let h = `<div class="qcm-options" id="qcm-${idx}">`;
+    ex.options.forEach((opt, oi) => {
+      h += `<div class="qcm-opt" onclick="checkQCM(${idx},'${c.id}',${oi},${ex.correct})">${opt}</div>`;
+    });
+    h += `</div>`;
+    h += `<div class="feedback" id="fb-${idx}"></div>`;
+    if (ex.indices && ex.indices.length) {
+      h += `<button class="btn btn-secondary indice-btn" onclick="showIndice(${idx},0)">💡 Indice</button>`;
+      ex.indices.forEach((ind,ii) => {
+        h += `<div class="indice-text" id="ind-${idx}-${ii}">${ind}</div>`;
+      });
+    }
+    return h;
+  }
+
+  if (ex.type === 'fill') {
+    let h = `<div class="fill-input">
+      <input type="text" id="fill-${idx}" placeholder="Ta réponse…" onkeydown="if(event.key==='Enter')checkFill(${idx},'${c.id}','${ex.answer}')">
+      <button class="btn btn-primary" onclick="checkFill(${idx},'${c.id}','${ex.answer}')">Valider</button>
+    </div>`;
+    if (ex.hint) h += `<button class="btn btn-secondary indice-btn" style="margin-bottom:8px" onclick="showFillHint(${idx})">💡 Indice</button><div class="indice-text" id="hint-${idx}">${ex.hint}</div>`;
+    h += `<div class="feedback" id="fb-${idx}"></div>`;
+    if (ex.explication) {
+      h += `<div class="solution-panel"><div class="solution-toggle" onclick="toggleSolution(${idx})">📖 Voir la solution</div>
+        <div class="solution-body" id="sol-${idx}"><p>${ex.explication}</p></div></div>`;
+    }
+    return h;
+  }
+  return '';
+}
+
+function renderFiche(fiche) {
+  let html = `<div class="fiche"><div class="fiche-header"><h2>${fiche.titre}</h2></div><div class="fiche-body">`;
+  fiche.sections.forEach(s => {
+    html += `<div class="fiche-section"><h4>${s.titre}</h4><ul>${s.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+// ══════════════════════════════════════════════════
+// INTERACTIONS EXERCICES
+// ══════════════════════════════════════════════════
+function checkQCM(idx, courseId, chosen, correct) {
+  const opts = document.querySelectorAll(`#qcm-${idx} .qcm-opt`);
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[chosen].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[correct].classList.add('correct');
+  
+  const fb = document.getElementById(`fb-${idx}`);
+  const c = COURSES.find(x => x.id === courseId);
+  const ex = c.exercices[idx];
+  if (fb) {
+    fb.className = `feedback show ${chosen === correct ? 'correct' : 'wrong'}`;
+    fb.textContent = chosen === correct ? `✓ Correct ! ${ex.explication||''}` : `✗ Pas tout à fait. ${ex.explication||''}`;
+  }
+  const key = courseId + '_' + idx;
+  state.exoState[key] = chosen === correct;
+  saveProgress();
+}
+
+function checkFill(idx, courseId, answer) {
+  const inp = document.getElementById(`fill-${idx}`);
+  const fb = document.getElementById(`fb-${idx}`);
+  if (!inp || !fb) return;
+  const val = inp.value.trim().replace(/\s/g,'').toLowerCase();
+  const ans = String(answer).replace(/\s/g,'').toLowerCase();
+  const correct = val === ans;
+  inp.className = correct ? 'correct' : 'wrong';
+  fb.className = `feedback show ${correct ? 'correct' : 'wrong'}`;
+  const c = COURSES.find(x => x.id === courseId);
+  const ex = c.exercices[idx];
+  fb.textContent = correct ? `✓ Exact ! ${ex.explication||''}` : `✗ La bonne réponse est : ${answer}. ${ex.explication||''}`;
+  const key = courseId + '_' + idx;
+  state.exoState[key] = correct;
+  saveProgress();
+}
+
+function showIndice(exoIdx, indIdx) {
+  const el = document.getElementById(`ind-${exoIdx}-${indIdx}`);
+  if (el) el.classList.toggle('show');
+}
+
+function showFillHint(idx) {
+  const el = document.getElementById(`hint-${idx}`);
+  if (el) el.classList.toggle('show');
+}
+
+function toggleSolution(idx) {
+  const el = document.getElementById(`sol-${idx}`);
+  if (el) el.classList.toggle('show');
+}
+
+// ══════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════
+function switchLecon(i) {
+  state.currentLecon = i;
+  renderCourse();
+  document.getElementById('main').scrollTop = 0;
+}
+
+function markLeconDone(leconId) {
+  const c = state.currentCourse;
+  if (!state.leconDone[c.id]) state.leconDone[c.id] = {};
+  state.leconDone[c.id][leconId] = true;
+  try { localStorage.setItem('mc_leconDone', JSON.stringify(state.leconDone)); } catch(e) {}
+  renderCourse();
+  
+  // If all done
+  const allDone = c.lecons.every(l => state.leconDone[c.id][l.id]);
+  if (allDone) {
+    if (!state.progress[c.id]) state.progress[c.id] = true;
+    saveProgress();
+    updateStats();
+  }
+}
+
+function scrollToExo() {
+  const el = document.getElementById('exo-section');
+  if (el) el.scrollIntoView({behavior:'smooth'});
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('main').scrollTop = 0;
+}
+
+function goBack() {
+  showPage('page-catalogue');
+  renderCatalogue();
+}
+
+function saveProgress() {
+  try { localStorage.setItem('mc_progress', JSON.stringify(state.progress)); } catch(e) {}
+  updateStats();
+}
+
+function updateStats() {
+  const mastered = Object.keys(state.progress).length;
+  const pct = Math.round(mastered/COURSES.length*100);
+  const el = document.getElementById('stat-progress');
+  if (el) el.textContent = pct + '%';
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+function init() {
+  renderCatalogue();
+  updateStats();
+  setLevel('all');
+}
+
+init();
+</script>
 </body>
 </html>
